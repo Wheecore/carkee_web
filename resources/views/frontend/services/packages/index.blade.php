@@ -1,0 +1,780 @@
+@extends('frontend.layouts.app')
+
+@section('content')
+
+    <style>
+        /*.wrapper{*/
+        /*width:70%;*/
+        /*}*/
+        @media(max-width:992px){
+            .wrapper{
+                width:100%;
+            }
+        }
+        .panel-heading {
+            padding: 0;
+            border:0;
+        }
+        .panel-title>a, .panel-title>a:active{
+            display:block;
+            padding:15px;
+            color:#555;
+            font-size:16px;
+            font-weight:bold;
+            text-transform:uppercase;
+            letter-spacing:1px;
+            word-spacing:3px;
+            text-decoration:none;
+        }
+        .panel-heading  a:before {
+            font-family: 'Glyphicons Halflings';
+            content: "\e114";
+            float: right;
+            transition: all 0.5s;
+        }
+        .panel-heading.active a:before {
+            -webkit-transform: rotate(180deg);
+            -moz-transform: rotate(180deg);
+            transform: rotate(180deg);
+        }
+
+        input[type="checkbox"]{ width: 19px; height: 19px; vertical-align: -2px;  }
+
+        input:checked {  /* input[type="checkbox"]:checked  only makes checkboxes big -- Confirm\tested */
+            height: 25px;
+            width: 25px;
+        }
+
+        #info { background-color: hsl(0, 0%, 92%);
+            padding: 8px 15px;
+            box-shadow: 0 0 1px hsl(0, 0%, 61%);
+            margin: 5px 0 10px -10px;
+            color: black; font: 17px Calibri;
+            width: 90%;
+        }
+
+        .tools {
+            overflow: auto;
+            zoom: 1;
+        }
+        .search-area {
+            float: left;
+            width: 60%;
+        }
+        .settings {
+            display: none;
+            float: right;
+            width: 40%;
+            text-align: right;
+        }
+        #view {
+            display: none;
+            width: auto;
+            height: 47px;
+        }
+        #searchbutton {
+            width: 60px;
+            height: 47px;
+        }
+        @media screen and (max-width:400px) {
+            .search-area {
+                width: 100%;
+            }
+        }
+
+        .products {
+            width: 100%;
+            /*font-family: Raleway;*/
+        }
+        .product {
+            display: inline-block;
+            width: calc(24% - 13px);
+            margin: 10px 10px 30px 10px;
+            vertical-align: top;
+        }
+        .product img {
+            display: block;
+            margin: 0 auto;
+            width: auto;
+            height: 200px;
+            max-width: calc(100% - 20px);
+            background-cover: fit;
+            box-shadow: 0px 0px 7px 0px rgba(0,0,0,0.8);
+            border-radius: 2px;
+        }
+        .product-content {
+            text-align: center;
+        }
+        .product h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 10px 0 0 0;
+        }
+        .product h3 small {
+            display: block;
+            font-size: 16px;
+            font-weight: 400;
+            /*font-style: italic;*/
+            margin: 7px 0 0 0;
+        }
+        .product .product-text {
+            margin: 7px 0 0 0;
+            color: #777;
+        }
+        .product .price {
+            /*font-family: sans-serif;*/
+            font-size: 16px;
+            font-weight: 700;
+        }
+        .product .genre {
+            font-size: 14px;
+        }
+
+
+        @media screen and (max-width:1150px) {
+            .product {
+                width: calc(33% - 23px);
+            }
+        }
+        @media screen and (max-width:700px) {
+            .product {
+                width: calc(50% - 43px);
+            }
+        }
+        @media screen and (max-width:400px) {
+            .product {
+                width: 100%;
+            }
+        }
+
+        /* TABLE VIEW */
+        @media screen and (min-width:401px) {
+            .settings {
+                display: block;
+            }
+            #view {
+                display: inline;
+            }
+            .products-table .product {
+                display: block;
+                width: auto;
+                margin: 10px 10px 30px 10px;
+            }
+            .products-table .product .product-img {
+                display: inline-block;
+                margin: 0;
+                width: 120px;
+                height: 120px;
+                /*vertical-align: middle;*/
+            }
+            .products-table .product img {
+                width: auto;
+                height: 120px;
+                max-width: 120px;
+            }
+            .products-table .product-content {
+                text-align: left;
+                display: inline-block;
+                margin-left: 20px;
+                vertical-align: middle;
+                width: calc(100% - 145px);
+            }
+            .products-table .product h3 {
+                margin: 0;
+            }
+        }
+        .product img{
+            box-shadow: 0px 0px 0px 0px rgb(0 0 0 / 80%); !important;
+        }
+        h6{
+            color:#FB5531;
+        }
+        h4{
+            color:#FB5531;
+        }
+        .btn-circle.btn-xl {
+            width: 35px;
+            height: 35px;
+            padding: 10px 16px;
+            border-radius: 35px;
+            font-size: 24px;
+            line-height: 1.33;
+        }
+
+        .btn-circle {
+            width: 30px;
+            height: 30px;
+            padding: 6px 0px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 12px;
+            line-height: 1.42857;
+        }
+
+    </style>
+    <?php
+    if(isset($_GET['r_brand_id'])){
+        Session::put('session_brand_id', $_GET['r_brand_id']);
+        Session::put('session_model_id', $_GET['r_model_id']);
+        Session::put('session_details_id', $_GET['r_details_id']);
+        Session::put('session_year_id', $_GET['r_year_id']);
+        Session::put('session_type_id', $_GET['r_type_id']);
+    }
+
+    ?>
+    <section class="pt-4 mb-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 text-center text-lg-left">
+                </div>
+                <div class="col-lg-6">
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <div id="section_featured">
+        <section class="mb-4">
+            <div class="container">
+                <div class="px-2 py-4 px-md-4 py-md-3 bg-white shadow-sm rounded">
+                    <div class="row">
+                        <div class="col-12">
+                            <h3 class="h5 fw-700 mb-0">
+                                <span class="border-bottom border-primary border-width-2 pb-3 d-inline-block">All Packages</span>
+                            </h3></div>
+                    </div>
+
+                    <div class="mt-2">
+                        <h5 style="color: #F37021"><b>Guide: &nbsp;Choose First Mileage> &nbsp;Choose Package> &nbsp;Add To Cart Products</b></h5>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3 col-sm-12">
+                            <form class="" id="sort_mileges" action="" method="GET">
+                                <input type="hidden" name="category_id" value="{{ $cat_name }}">
+                                @if(isset($cs->brand_id) && $cs->brand_id != 0)
+                                    <input type="hidden" name="brand_id"
+                                           value="{{ isset($cs->brand_id)?$cs->brand_id:'' }}">
+                                    <input type="hidden" name="model_id"
+                                           value="{{ isset($cs->model_id)?$cs->model_id:'' }}">
+                                    <input type="hidden" name="details_id"
+                                           value="{{ isset($cs->details_id)?$cs->details_id:'' }}">
+                                    <input type="hidden" name="year_id"
+                                           value="{{ isset($cs->year_id)?$cs->year_id:'' }}">
+                                    <input type="hidden" name="type_id"
+                                           value="{{ isset($cs->type_id)?$cs->type_id:'' }}">
+
+                                    <h3 class="h5 fw-700">
+                                        <select class="form-control form-control-sm aiz-selectpicker mb-2 mb-md-0" id="package_id" name="package_id" onchange="sort_mileges()">
+                                            <option value="">{{ translate('Mileages') }}</option>
+                                            @if(count($mpackages)>0)
+                                                @foreach ($mpackages as $key => $package)
+                                                    <option value="{{ $package->id }}" >{{ $package->mileage }}</option>
+
+                                                @endforeach
+                                            @endif
+                                        </select>
+                                    </h3>
+                                @elseif(Session::get('session_model_id'))
+                                    <input type="hidden" name="brand_id"
+                                           value="{{ Session::get('session_brand_id') }}">
+                                    <input type="hidden" name="model_id"
+                                           value="{{ Session::get('session_model_id') }}">
+                                    <input type="hidden" name="details_id"
+                                           value="{{ Session::get('session_details_id') }}">
+                                    <input type="hidden" name="year_id"
+                                           value="{{ Session::get('session_year_id') }}">
+                                    <input type="hidden" name="type_id"
+                                           value="{{ Session::get('session_type_id') }}">
+
+                                    <h3 class="h5 fw-700">
+
+                                        <select class="form-control form-control-sm aiz-selectpicker mb-2 mb-md-0" id="package_id" name="package_id" onchange="sort_mileges()">
+                                            <option value="">{{ translate('Mileages') }}</option>
+                                            @if(count($mpackages)>0)
+                                                @foreach ($mpackages as $key => $package)
+                                                    <option value="{{ $package->id }}">{{ $package->mileage }}</option>
+                                                @endforeach
+                                            @endif
+                                        </select>
+
+                                    </h3>
+
+                                @endif
+                            </form>
+                        </div>
+                    </div>
+
+
+                    <?php
+                    if(!Auth::user()){
+                        flash(translate('Please Login First for changing group item!'))->error();
+                        "<script>location.reload();</script>";
+
+                    }
+                    ?>
+
+
+
+
+                    @if(count($packages)>0)
+                        @foreach($packages as $key=>$package)
+                            <?php
+                            $ppr = App\PackageProduct::where('package_id', $package->id)->where('type', 'Recommended')->first();
+                            $ppa = App\PackageProduct::where('package_id', $package->id)->where('type', 'Addon')->first();
+
+                            if(Auth::user()){
+
+                                if (isset($ppr)) {
+                                    $pppr = DB::table('cart_package_products')->where('product_id', $ppr->id)->where('user_id', Auth::id())->first();
+                                }
+                                if (isset($ppa)) {
+                                    $pppa = DB::table('cart_package_products')->where('product_id', $ppa->id)->where('user_id', Auth::id())->first();
+                                }
+
+                                if (isset($pppr)){
+                                    $rrproducts = json_decode(!empty($pppr->products) ? $pppr->products : '', TRUE);
+                                }
+                                else{
+                                    $rrproducts = json_decode(!empty($ppr->products) ? $ppr->products : '', TRUE);
+                                }
+                                if (isset($pppa)) {
+                                    $aaproducts = json_decode($pppa->products, TRUE);
+                                }
+                                else{
+                                    $aaproducts = json_decode(isset($ppa)?$ppa->products:'', TRUE);
+                                }
+
+                                ////Recommended part
+                                if (isset($rrproducts)) {
+                                    $numbers = $rrproducts;
+                                    if (isset($_GET['old_id']) && $_GET['old_id']) {
+//                                    dd($_GET['old_id']);
+                                        if (($rkey = array_search($_GET['old_id'], $numbers)) !== false) {
+                                            unset($numbers[$rkey]);
+                                            $numbers[$rkey] = $_GET['new_id'];
+                                            ksort($numbers);
+                                            $numbers = array_values($numbers);
+
+                                        }
+                                        $rrproducts = $numbers;
+                                    }
+                                }
+                                //dd($aaproducts);
+                                //////Addon Part
+                                $anumbers = $aaproducts;
+
+                                if (isset($_GET['old_id']) && $_GET['old_id'] && $anumbers) {
+                                    if (($akey = array_search($_GET['old_id'], $anumbers)) !== false) {
+                                        unset($anumbers[$akey]);
+                                        $anumbers[$akey] = $_GET['new_id'];
+                                        ksort($anumbers);
+                                        $anumbers = array_values($anumbers);
+                                    }
+                                    $aaproducts = $anumbers;
+                                }
+                                if (isset($ppr)) {
+                                    if (isset($ppr)) {
+                                        if ($pppr) {
+                                            DB::table('cart_package_products')->where('product_id', $ppr->id)->where('user_id', Auth::id())->update([
+                                                'user_id' => Auth::id(),
+                                                'products' => json_encode(array_unique($rrproducts))
+                                            ]);
+                                        } else {
+                                            DB::table('cart_package_products')->where('product_id', $ppr->id)->insert([
+                                                'product_id' => $ppr->id,
+                                                'package_id' => $ppr->package_id,
+                                                'user_id' => Auth::id(),
+                                                'products' => json_encode(array_unique($rrproducts)),
+                                            ]);
+                                        }
+                                    }
+                                }
+                                if (isset($ppa)) {
+                                    if ($pppa) {
+                                        DB::table('cart_package_products')->where('product_id', $ppa->id)->where('user_id', Auth::id())->update([
+                                            'user_id' => \Auth::id(),
+                                            'products' => json_encode(array_unique($aaproducts))
+                                        ]);
+                                    } else {
+                                        DB::table('cart_package_products')->where('product_id', $ppa->id)->insert([
+                                            'product_id' => $ppa->id,
+                                            'package_id' => $ppa->package_id,
+                                            'user_id' => Auth::id(),
+                                            'products' => json_encode(array_unique($aaproducts)),
+                                            'type' => "Addon",
+                                        ]);
+                                    }
+
+                                }
+                            }
+                            else{
+                                $rrproducts = json_decode(!empty($ppr->products) ? $ppr->products : '', TRUE);
+                                $aaproducts = json_decode(isset($ppa)?$ppa->products:'', TRUE);
+                            }
+
+                            ?>
+
+                            <?php
+                            $package = App\Package::where('id', $package->id)->first();
+                            $aproducts=[];
+                            $ppr = App\PackageProduct::where('package_id', $package->id)->where('type', 'Recommended')->first();
+                            $ppa = App\PackageProduct::where('package_id', $package->id)->where('type', 'Addon')->first();
+                            //
+                            $rproducts = json_decode(!empty($ppr->products)?$ppr->products:'', TRUE);
+                            if ($ppa) {
+                                $aproducts = json_decode($ppa->products, TRUE);
+                            }
+                            ?>
+                            @if($rrproducts != null)
+                                <?php
+
+                                $gproduct = 0;
+                                ?>
+                                @foreach($rrproducts as $item)
+                                    @if ($item != "on")
+                                        <?php
+                                        $tproduct = DB::table('products')->where('id', $item)->sum('unit_price');
+                                        $gproduct = $gproduct+$tproduct;
+
+                                        ?>
+
+                                    @endif
+                                @endforeach
+
+                            @endif
+
+                            @if($aaproducts != null)
+                                @foreach($aaproducts as $item)
+                                    @if ($item != "on")
+                                        <?php
+                                        $tproduct = DB::table('products')->where('id', $item)->sum('unit_price');
+                                        $gproduct = $gproduct+$tproduct;
+                                        ?>
+                                    @endif
+                                @endforeach
+                            @endif
+                            @if($rrproducts == null && $aaproducts == null)
+                                <?php
+
+                                $gproduct = 0;
+                                ?>
+                            @endif
+
+                            @if(isset($_GET['package_id']))
+                                <div class="wrapper center-block">
+                                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                        <div class="panel panel-default">
+                                            <div class="" role="tab" id="headingOne">
+                                                <h4 class="panel-title">
+
+                                                    <a role="button" class="collapse_action" data-toggle="collapse" data-parent="#accordion" href="#collapseOne{{$key}}" aria-expanded="true" aria-controls="collapseOne" onclick="chkfunc('{{$key}}')">
+                                                        <div id="check_container_div">
+
+                                                            <b>
+                                                                <button type="button" class="btn btn-circle btn-xl" id="btn-circle{{ $key }}" style="border: 1px solid"><i class="fa fa-heart"></i>
+                                                                </button>
+                                                                {{ $package->getTranslation('name') }}
+                                                            </b>
+                                                            @if(isset($gproduct) && $gproduct != 0)
+                                                                <span class="mt-1 ml-2" style="border: 2px solid;padding: 5px;float: right;color: #F37021">{{single_price($gproduct)}}</span>
+                                                            @endif
+                                                        </div>
+                                                    </a>
+                                                </h4>
+                                            </div> <hr>
+                                            <div id="collapseOne{{$key}}" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                                <div class="panel-body">
+
+                                                    <h6><b>Recommended Products
+                                                            <span style="float: right;"><a href="{{ url('cart/packageToCart',$package->id) }}" class="btn btn-soft-primary mr-2 fw-600">
+                                            <i class="las la-shopping-bag"></i>
+                                            <span class="d-none d-md-inline-block"> {{ translate('Add to cart')}}</span>
+                                        </a></span></b></h6>
+                                                    <hr class="mt-5">
+
+                                                    <div class="row">
+
+
+                                                        @if($rrproducts != null)
+                                                            @foreach($rrproducts as $item)
+                                                                @if ($item != "on")
+                                                                    <?php
+                                                                    $product = DB::table('products')->where('id', $item)->first();
+                                                                    $stock = DB::table('product_stocks')->where('product_id', $item)->first();
+
+                                                                    $group_products = DB::table('product_groups')->whereJsonContains('product_id', $item)->first();
+                                                                    if ($group_products) {
+                                                                        $json_groups = json_decode($group_products->product_id);
+                                                                    }
+                                                                    ?>
+
+                                                                    @if($product)
+                                                                        <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                                                            <a href="{{ route('product', $product->slug) }}"
+                                                                               class="d-block">
+                                                                                <img
+                                                                                        class="" style="height: 122px;width: 170px;"
+                                                                                        src="{{ uploaded_asset($product->thumbnail_img) }}"
+                                                                                        alt=""
+                                                                                        onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';"
+                                                                                >
+                                                                            </a>
+                                                                        </div>
+                                                                        <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                                            <div class="clearfix mb-3">
+																		<span class="float-end"><a href="#"><a
+                                                                                        href="{{ route('product', $product->slug) }}"
+                                                                                        class="d-block text-reset">
+                                                            {{ $product->name }}
+                                                        </a></a></span>
+                                                                            </div>
+                                                                            <h5 class="card-title">{!! Str::limit($product->description, 190) !!}</h5>
+
+                                                                            @if($group_products)
+                                                                                @foreach($json_groups as $group_id)
+                                                                                    <?php
+                                                                                    $g_product = DB::table('products')->where('id', $group_id)->first();
+                                                                                    $g_stock = DB::table('product_stocks')->where('product_id', $group_id)->first();
+                                                                                    ?>
+
+                                                                                    <form action="" method="get" id="sort_ggroup">
+                                                                                        <input type="hidden" value="{{ $product->id }}"
+                                                                                               name="old_id">
+                                                                                        <input type="hidden" value="{{ $g_product->id }}"
+                                                                                               name="new_id">
+                                                                                        <input type="hidden" name="category_id" value="{{ $cat_name }}">
+                                                                                        <input type="hidden" name="key" value="{{ $key }}">
+                                                                                        <input type="hidden" name="brand_id"
+                                                                                               value="{{ isset($_GET['brand_id'])?$_GET['brand_id']:'' }}">
+                                                                                        <input type="hidden" name="model_id"
+                                                                                               value="{{ isset($_GET['model_id'])?$_GET['model_id']:'' }}">
+                                                                                        <input type="hidden" name="details_id"
+                                                                                               value="{{ isset($_GET['details_id'])?$_GET['details_id']:'' }}">
+                                                                                        <input type="hidden" name="year_id"
+                                                                                               value="{{ isset($_GET['year_id'])?$_GET['year_id']:'' }}">
+                                                                                        <input type="hidden" name="type_id"
+                                                                                               value="{{ isset($_GET['type_id'])?$_GET['type_id']:'' }}">
+
+                                                                                        <input type="hidden" name="package_id" value="{{ $_GET['package_id'] }}">
+
+
+                                                                                        <div class="row">
+
+                                                                                            <div class="col-2">
+                                                                                                <button href="javascript:void(0)"
+                                                                                                        onclick="callGroupFunc()"
+                                                                                                        class="d-block">
+                                                                                                    <img
+                                                                                                            class=""
+                                                                                                            style="height: 40px;width: 60px;"
+                                                                                                            src="{{ uploaded_asset($g_product->thumbnail_img) }}"
+                                                                                                            alt=""
+                                                                                                            onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';"
+                                                                                                    >
+                                                                                                </button>
+                                                                                                <small class=""
+                                                                                                       style="color: #E62E04">{{ single_price($g_product->unit_price) }}</small>
+                                                                                            </div>
+                                                                                            <div class="col-2">
+                                                                                                <small class=""
+                                                                                                       style="font-weight:600">{{ $g_product->name }}</small>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        {{--<input type="submit" value="" id="mysubmit">--}}
+                                                                                    </form>
+
+                                                                                @endforeach
+                                                                            @endif
+                                                                        </div>
+                                                                        <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                                                            <b class="d-grid gap-2 mt-3 my-4"
+                                                                               style="color: #E62E04">{{ single_price($product->unit_price) }}</b>
+                                                                        </div>
+                                                                    @endif
+                                                                    <br>
+                                                                    <br>
+                                                                    <br>
+                                                                    <br>
+                                                                    <br>
+                                                                    <br>
+                                                                @endif
+                                                            @endforeach
+
+                                                        @else
+                                                            <div class="text-center p-3">
+                                                                <i class="las la-frown la-3x opacity-60 mb-3"></i>
+                                                                <h3 class="h6 fw-700">Recommended Products is empty</h3>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    <h6><b>Addon Products
+                                                        </b></h6>
+                                                    <hr>
+                                                    <div class="row">
+                                                        @if($aaproducts != null)
+                                                            @foreach($aaproducts as $item)
+                                                                @if ($item != "on")
+                                                                    <?php
+                                                                    $product = DB::table('products')->where('id', $item)->first();
+                                                                    $stock = DB::table('product_stocks')->where('product_id', $item)->first();
+
+                                                                    $agroup_products = DB::table('product_groups')->whereJsonContains('product_id', $item)->first();
+                                                                    //                                                                print_r($agroup_products);
+                                                                    if ($agroup_products) {
+                                                                        $ajson_groups = json_decode($agroup_products->product_id);
+                                                                    }
+                                                                    ?>
+
+
+
+                                                                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                                                        <a href="{{ route('product', $product->slug) }}"
+                                                                           class="d-block">
+                                                                            <img
+                                                                                    class="" style="height: 122px;width: 170px;"
+                                                                                    src="{{ uploaded_asset($product->thumbnail_img) }}"
+                                                                                    alt=""
+                                                                                    onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';"
+                                                                            >
+                                                                        </a>
+                                                                    </div>
+                                                                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+                                                                        <div class="clearfix mb-3">
+																		<span class="float-end"><a href="#"><a
+                                                                                        href="{{ route('product', $product->slug) }}"
+                                                                                        class="d-block text-reset">
+                                                            {{ $product->name }}
+                                                        </a></a></span>
+                                                                        </div>
+                                                                        <h5 class="card-title">{!! Str::limit($product->description, 190) !!}</h5>
+
+                                                                        @if($agroup_products)
+                                                                            <div class="row" style="border: 2px solid #EC2303;padding: 20px;">
+                                                                                @foreach($ajson_groups as $group_id)
+                                                                                    <?php
+                                                                                    $g_product = DB::table('products')->where('id', $group_id)->first();
+                                                                                    $g_stock = DB::table('product_stocks')->where('product_id', $group_id)->first();
+                                                                                    ?>
+
+                                                                                    <form action="" method="get" id="sort_ggroup">
+                                                                                        <input type="hidden" value="{{ $product->id }}"
+                                                                                               name="old_id">
+                                                                                        <input type="hidden" value="{{ $g_product->id }}"
+                                                                                               name="new_id">
+
+                                                                                        <input type="hidden" name="category_id" value="{{ $cat_name }}">
+                                                                                        <input type="hidden" name="key" value="{{ $key }}">
+                                                                                        <input type="hidden" name="brand_id"
+                                                                                               value="{{ isset($_GET['brand_id'])?$_GET['brand_id']:'' }}">
+                                                                                        <input type="hidden" name="model_id"
+                                                                                               value="{{ isset($_GET['model_id'])?$_GET['model_id']:'' }}">
+                                                                                        <input type="hidden" name="details_id"
+                                                                                               value="{{ isset($_GET['details_id'])?$_GET['details_id']:'' }}">
+                                                                                        <input type="hidden" name="year_id"
+                                                                                               value="{{ isset($_GET['year_id'])?$_GET['year_id']:'' }}">
+                                                                                        <input type="hidden" name="type_id"
+                                                                                               value="{{ isset($_GET['type_id'])?$_GET['type_id']:'' }}">
+
+                                                                                        <div class="col-2">
+                                                                                            <button href="javascript:void(0)"
+                                                                                                    onclick="callGroupFunc()"
+                                                                                                    class="d-block">
+                                                                                                <img
+                                                                                                        class=""
+                                                                                                        style="height: 40px;width: 60px;"
+                                                                                                        src="{{ uploaded_asset($g_product->thumbnail_img) }}"
+                                                                                                        alt=""
+                                                                                                        onerror="this.onerror=null;this.src='{{ static_asset('assets/img/placeholder.jpg') }}';"
+                                                                                                >
+                                                                                            </button>
+                                                                                            <small class="d-grid gap-2 mt-3 my-4"
+                                                                                                   style="color: #E62E04">{{ single_price($g_product->unit_price) }}</small>
+                                                                                            <small class="d-grid gap-2 mt-3 my-4"
+                                                                                                   style="">{{ $g_product->name }}</small>
+                                                                                        </div>
+                                                                                        {{--<input type="submit" value="" id="mysubmit">--}}
+                                                                                    </form>
+
+                                                                                    {{--@endif--}}
+                                                                                @endforeach
+
+                                                                            </div>
+                                                                        @endif
+
+                                                                    </div>
+                                                                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+                                                                        <b class="d-grid gap-2 mt-3 my-4"
+                                                                           style="color: #E62E04">{{ single_price($product->unit_price) }}</b>
+                                                                    </div>
+
+                                                                    <br>
+                                                                    <br>
+                                                                    <br>
+                                                                    <br>
+                                                                    <br>
+                                                                    <br>
+                                                                @endif
+                                                            @endforeach
+
+                                                        @else
+                                                            <div class="text-center p-3">
+                                                                <i class="las la-frown la-3x opacity-60 mb-3"></i>
+                                                                <p class="h6 fw-700">Addon Products is empty</p>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            @endif
+                        @endforeach
+
+                    @else
+                        <div class="text-center p-3">
+                            <i class="las la-frown la-3x opacity-60 mb-3"></i>
+                            <h3 class="h6 fw-700">is empty</h3>
+                        </div>
+                    @endif
+
+                </div>
+            </div>
+        </section>
+    </div>
+
+@endsection
+
+@section('script')
+    <script>
+        function sort_mileges(el){
+            $('#sort_mileges').submit();
+        }
+    </script>
+    <script>
+        function callGroupFunc() {
+            $('#sort_group').submit();
+        }
+    </script>
+
+    @if (isset($_GET['old_id']) && $_GET['old_id'])
+        <?php
+        $r_key = isset($_GET['key'])?$_GET['key']:'';
+        ?>
+        <script>
+            $('#btn-circle{{$r_key}}').click();
+            $('#btn-circle{{$r_key}}').addClass("btn-primary");
+        </script>
+
+    @else
+        <?php
+        if(Auth::user()){
+            DB::table('cart_package_products')->where('user_id', Auth::id())->delete();
+        }
+        ?>
+
+    @endif
+
+@endsection
