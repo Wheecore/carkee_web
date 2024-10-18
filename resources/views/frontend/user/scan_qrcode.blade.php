@@ -60,8 +60,6 @@
 
           if (currentUrl.includes('scan-do')) {
             const qrMessageJson = JSON.parse(qrMessage);
-            console.log(qrMessageJson);
-
             location.href = 'do-order/' + decodeURIComponent(qrMessageJson.order_code);
           } else {
             location.href = 'qrcode-order/' + decodeURIComponent(qrMessage);
