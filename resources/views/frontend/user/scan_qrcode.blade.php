@@ -175,37 +175,41 @@
             }
         }
 
-        // Initialize the QR Code Scanner
+        // Initialize the QR Code Scanner with permission handling
         async function initializeQrScanner() {
             try {
-                let qrboxSize = getInitialQrBoxSize();
-                let cameraId = null;
+                // Check for media devices and permission support
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    let qrboxSize = getInitialQrBoxSize();
+                    let cameraId = null;
 
-                if (isMobile) {
-                    enterFullScreenMode();  // Optionally enter full-screen mode on mobile
-                    cameraId = await getBackCamera();  // Automatically select the back camera if available
+                    if (isMobile) {
+                        enterFullScreenMode();  // Optionally enter full-screen mode on mobile
+                        cameraId = await getBackCamera();  // Automatically select the back camera if available
+                    }
+
+                    // Request camera access before initializing the scanner
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    
+                    html5QrCodeScanner = new Html5QrcodeScanner("reader", {
+                        fps: 10,
+                        qrbox: qrboxSize
+                    }, /* verbose= */ false);
+
+                    // Render the scanner
+                    html5QrCodeScanner.render(onScanSuccess, onScanFailure);
+                } else {
+                    throw new Error("Camera not supported or blocked on this device.");
                 }
-
-                html5QrCodeScanner = new Html5QrcodeScanner("reader", {
-                    fps: 10,
-                    qrbox: qrboxSize
-                }, /* verbose= */ false);
-
-                // Render the scanner
-                html5QrCodeScanner.render(onScanSuccess, onScanFailure);
             } catch (error) {
                 console.error("Error initializing QR scanner: ", error);
-                document.getElementById('qr-reader-error').textContent = "Error initializing QR scanner.";
+                document.getElementById('qr-reader-error').textContent = error.message;
             }
         }
 
         // Initialize the scanner when the document is ready
         $(document).ready(function() {
-            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                initializeQrScanner();
-            } else {
-                document.getElementById('qr-reader-error').textContent = "Camera not supported on this device.";
-            }
+            initializeQrScanner();
         });
 
         // Make the scanner responsive without re-initializing on resize
@@ -214,6 +218,7 @@
         });
 
     </script>
+
 
 
 @endsection
