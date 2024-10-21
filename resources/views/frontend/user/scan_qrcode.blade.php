@@ -104,7 +104,7 @@
             return window.innerWidth < 768 ? 200 : 350; // Adjust sizes as needed
         }
 
-        // Full screen for mobile view
+        // Full screen for mobile view (optional)
         function enterFullScreenMode() {
             const readerElement = document.getElementById('reader');
             if (readerElement.requestFullscreen) {
@@ -149,48 +149,63 @@
         // Callback when a QR code scan fails
         function onScanFailure(error) {
             console.warn(`QR error = ${error}`);
-            // Optionally, display scan errors to the user
+            document.getElementById('qr-reader-error').textContent = `Error: ${error}`;
         }
 
-        // Automatically select the back camera on mobile
+        // Automatically select the camera (fallback to default on mobile)
         async function getBackCamera() {
-            const devices = await navigator.mediaDevices.enumerateDevices();
-            let backCameraId = null;
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                let backCameraId = null;
 
-            devices.forEach((device) => {
-                if (device.kind === 'videoinput') {
-                    // Look for "back" or "rear" in the label to find the back camera
-                    if (device.label.toLowerCase().includes('back') || device.label.toLowerCase().includes('rear')) {
-                        backCameraId = device.deviceId;
+                devices.forEach((device) => {
+                    if (device.kind === 'videoinput') {
+                        // Look for "back" or "rear" in the label to find the back camera
+                        if (device.label.toLowerCase().includes('back') || device.label.toLowerCase().includes('rear')) {
+                            backCameraId = device.deviceId;
+                        }
                     }
-                }
-            });
+                });
 
-            // If no back camera found, return the first available camera
-            return backCameraId || devices.find(device => device.kind === 'videoinput').deviceId;
+                // If no back camera found, return the first available camera
+                return backCameraId || devices.find(device => device.kind === 'videoinput').deviceId;
+            } catch (error) {
+                console.error("Error getting camera devices: ", error);
+                return null;
+            }
         }
 
-        // Initialize the QR Code Scanner with the initial QR box size
+        // Initialize the QR Code Scanner
         async function initializeQrScanner() {
-            let qrboxSize = getInitialQrBoxSize();
-            let cameraId = null;
+            try {
+                let qrboxSize = getInitialQrBoxSize();
+                let cameraId = null;
 
-            if (isMobile) {
-                enterFullScreenMode();  // Enter full screen for mobile devices
-                cameraId = await getBackCamera();  // Automatically select the back camera
+                if (isMobile) {
+                    enterFullScreenMode();  // Optionally enter full-screen mode on mobile
+                    cameraId = await getBackCamera();  // Automatically select the back camera if available
+                }
+
+                html5QrCodeScanner = new Html5QrcodeScanner("reader", {
+                    fps: 10,
+                    qrbox: qrboxSize
+                }, /* verbose= */ false);
+
+                // Render the scanner
+                html5QrCodeScanner.render(onScanSuccess, onScanFailure);
+            } catch (error) {
+                console.error("Error initializing QR scanner: ", error);
+                document.getElementById('qr-reader-error').textContent = "Error initializing QR scanner.";
             }
-
-            html5QrCodeScanner = new Html5QrcodeScanner("reader", {
-                fps: 10,
-                qrbox: qrboxSize
-            }, /* verbose= */ false);
-
-            html5QrCodeScanner.render(onScanSuccess, onScanFailure, cameraId ? { deviceId: cameraId } : undefined);
         }
 
         // Initialize the scanner when the document is ready
         $(document).ready(function() {
-            initializeQrScanner();
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                initializeQrScanner();
+            } else {
+                document.getElementById('qr-reader-error').textContent = "Camera not supported on this device.";
+            }
         });
 
         // Make the scanner responsive without re-initializing on resize
@@ -199,5 +214,6 @@
         });
 
     </script>
+
 
 @endsection
