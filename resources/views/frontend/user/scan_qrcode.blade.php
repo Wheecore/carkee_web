@@ -149,7 +149,7 @@
         // Callback when a QR code scan fails
         function onScanFailure(error) {
             console.warn(`QR error = ${error}`);
-            document.getElementById('qr-reader-error').textContent = `Error: ${error}`;
+            // document.getElementById('qr-reader-error').textContent = `Error: ${error}`;
         }
 
         // Automatically select the camera (fallback to default on mobile)
