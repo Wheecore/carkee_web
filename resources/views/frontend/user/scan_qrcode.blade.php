@@ -51,7 +51,6 @@
 
 @endsection
 @section('script')
-
     <script type="text/javascript" src="{{ static_asset('assets/js/html5-qrcode.min.js') }}"></script>
     <script type="text/javascript">
 
@@ -67,17 +66,27 @@
 
         function onScanSuccess(qrMessage) {
             console.log("QR Code scanned: ", qrMessage);  // For debugging
+
+            // Stop the scanner once a QR code is successfully scanned
+            html5QrcodeScanner.clear(); // Stop the QR code scanner
+
             const currentUrl = window.location.pathname;
 
             if (currentUrl.includes('scan-do')) {
                 try {
                     const qrMessageJson = JSON.parse(qrMessage);
-                    location.href = 'do-order/' + decodeURIComponent(qrMessageJson.order_code);
+                    // Delay redirection slightly to ensure stopping
+                    setTimeout(() => {
+                        location.href = 'do-order/' + decodeURIComponent(qrMessageJson.order_code);
+                    }, 1000); // Optional delay for a smoother transition
                 } catch (error) {
                     console.error("Error parsing QR code: ", error);
                 }
             } else {
-                location.href = 'qrcode-order/' + decodeURIComponent(qrMessage);
+                // Delay redirection slightly to ensure stopping
+                setTimeout(() => {
+                    location.href = 'qrcode-order/' + decodeURIComponent(qrMessage);
+                }, 1000); // Optional delay for a smoother transition
             }
         }
 
@@ -85,13 +94,16 @@
             console.warn(`QR error = ${error}`);
         }
 
+        // Initialize the QR code scanner
         let html5QrcodeScanner = new Html5QrcodeScanner("reader", {
             fps: 10,
             qrbox: getQrBoxSize(),
         }, true);
 
+        // Render the QR code scanner
         html5QrcodeScanner.render(onScanSuccess, onScanFailure);
 
+        // Re-render the scanner when the window is resized
         window.addEventListener('resize', () => {
             html5QrcodeScanner.clear(); // Clear the scanner
             html5QrcodeScanner.render(onScanSuccess, onScanFailure); // Re-render with the new size
@@ -131,5 +143,6 @@
         }
 
     </script>
+
 
 @endsection
