@@ -7,3 +7,5 @@
 /.vscode
 /.vagrant
 node_modules
+**/public/qr-codes/*
+!**/public/qr-codes/*.md

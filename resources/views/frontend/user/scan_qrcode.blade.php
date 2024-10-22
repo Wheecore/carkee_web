@@ -2,14 +2,35 @@
 @section('panel_content')
 
     <style>
-        #deviceModal .modal-header{margin-top: 10px; font-weight:bold;}
-        .device label{display: flex; }
-        .device label span{line-height: 38px; margin-left: 10px;}
-        .device .form-control{display: inline-block;width:30px;}
-        .hero-area{border: 2px solid green;   margin: 10px;  min-height: 50vh;}
-        #reader{border:none !important;}
-        #reader > div > span:nth-child(1){font-size: 25px; font-weight: bold;}
-        #reader__dashboard_section_csr button{
+        #deviceModal .modal-header {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .device label {
+            display: flex;
+        }
+        .device label span {
+            line-height: 38px;
+            margin-left: 10px;
+        }
+        .device .form-control {
+            display: inline-block;
+            width: 30px;
+        }
+        .hero-area {
+            border: 2px solid green;
+            margin: 10px;
+            min-height: 50vh;
+        }
+        #reader {
+            border: none !important;
+            width: 100%;
+            max-width: 600px; /* Adjust as needed */
+            margin: 0 auto;
+            position: relative;
+            height: 80vh; /* Take 80% of the screen height */
+        }
+        #reader__dashboard_section_csr button {
             color: white;
             background-color: #01f3ff;
             border-color: #01f3ff;
@@ -18,9 +39,23 @@
             margin: 10px 0 20px;
             padding: 5px 10px;
         }
-        #reader__dashboard_section_csr select{width: 30%; height: 44px; border-radius: 5px;}
-        /*#reader__dashboard_section_swaplink{display:none;}*/
-        #reader__scan_region > img{width: 40%;}
+        #reader__dashboard_section_csr select {
+            width: 100%; /* Make select element responsive */
+            height: 44px;
+            border-radius: 5px;
+        }
+        #reader__scan_region > img {
+            width: 100%; /* Make the scanning area responsive */
+            height: auto;
+        }
+
+        /* Fullscreen for smaller screens */
+        @media (max-width: 768px) {
+            #reader {
+                max-width: 90%;
+                height: 100vh; /* Full height on mobile */
+            }
+        }
     </style>
 
     <section class="mb-4 mt-4">
@@ -50,18 +85,14 @@
     </div>
 
 @endsection
+
 @section('script')
     <script type="text/javascript" src="{{ static_asset('assets/js/html5-qrcode.min.js') }}"></script>
     <script type="text/javascript">
 
         function getQrBoxSize() {
-            if (window.innerWidth < 768) {
-                // Smaller screen (e.g., mobile)
-                return { width: window.innerWidth * 0.8, height: window.innerWidth * 0.8 }; // 80% of screen width
-            } else {
-                // Larger screen (e.g., desktop)
-                return { width: 350, height: 350 }; // Fixed size for desktops
-            }
+            const width = window.innerWidth < 768 ? window.innerWidth * 0.8 : 350;
+            return { width: width, height: width }; // Ensure width and height are equal
         }
 
         function onScanSuccess(qrMessage) {
@@ -143,6 +174,5 @@
         }
 
     </script>
-
 
 @endsection
