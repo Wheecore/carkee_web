@@ -1001,6 +1001,255 @@ class CartController extends Controller
         ], 200);
     }
 
+    public function categoryPageData(Request $request, $category_name, $user_id = null)
+    {
+        $featured_category_id = $request->featured_category_id;
+        $featured_sub_category_id = $request->featured_sub_category_id;
+        $vehicle_category_id = $request->vehicle_category_id;
+
+        if ($category_name != null) {
+            return $this->searchCategory($request, $category_name, $featured_category_id, $featured_sub_category_id, $vehicle_category_id, $user_id);
+        } else {
+            return response()->json([
+                'result' => false,
+                'message' => 'No category found!',
+            ], 404);
+        }
+    }
+
+    public function searchCategory(Request $request, $category_name, $featured_id = null, $sub_featured_id = null, $vehicle_category_id = null, $user_id)
+    {
+        $sort_by = $request->sort_by;
+        $brand_filter = $request->filter_by_brand;
+        $front_rear_filter = $request->filter_by_front_rear;
+        $product_filter = $request->filter_by_products;
+        $featured_categories = FeaturedCategory::select('id', 'name')->get();
+        $vehicle_categories = VehicleCategory::select('id', 'name')->get();
+        $size_categories = SizeCategory::select('id', 'name')->orderBy('name', 'desc')->get();
+        $brands = Brand::orderBy('name', 'asc')->select('id', 'name')->get();
+        $brand_category = DB::table('brand_datas')->where('type','tyre_brands')->select('id', 'name')->get();
+
+        switch ($category_name) {
+            case 'tyres':
+                $category = 'tyre';
+                $category_brands = 'tyre_brands';
+                $type = 'tyre';
+                break;
+            case 'parts':
+                $category = 'part';
+                $category_brands = 'part_brands';
+                $type = 'part';
+                break;
+            case 'carwash':
+                $category = 'car wash';
+                $category_brands = 'carwash_brands';
+                $type = 'car_wash';
+                break;
+        }
+
+        $category_id = Category::where('name', $category)->select('id')->first();
+        $category_id = $category_id->id;
+        $category_brands = DB::table('brand_datas')->where('type', $category_brands)->select('id', 'name')->get();
+
+        $lists_arr = [];
+        if ($user_id) {
+            $lists = DB::table('car_lists')
+                ->leftJoin('brands', 'brands.id', '=', 'car_lists.brand_id')
+                ->leftJoin('car_models', 'car_models.id', '=', 'car_lists.model_id')
+                ->leftJoin('car_years', 'car_years.id', '=', 'car_lists.year_id')
+                ->leftJoin('car_variants', 'car_variants.id', '=', 'car_lists.variant_id')
+                ->select('brands.name as brand_name', 'car_models.name as model_name', 'car_years.name as year_name',
+                    'car_variants.name as variant_name', 'car_lists.brand_id', 'car_lists.model_id', 'car_lists.year_id', 'car_lists.variant_id',
+                    'car_lists.car_plate', 'car_lists.id')
+                ->where('car_lists.user_id', $user_id)
+                ->orderBy('car_lists.id', 'desc')
+                ->get();
+            
+            $lists_arr = $lists->map(function ($list) {
+                return [
+                    'id' => $list->id,
+                    'car_plate' => $list->car_plate,
+                    'brand_id' => $list->brand_id ?? 0,
+                    'model_id' => $list->model_id ?? 0,
+                    'year_id' => $list->year_id ?? 0,
+                    'variant_id' => $list->variant_id ?? 0,
+                    'brand_name' => $list->brand_name,
+                    'model_name' => $list->model_name,
+                    'year_name' => $list->year_name,
+                    'variant_name' => $list->variant_name,
+                    'image' => ''
+                ];
+            });
+        }
+
+        $featured_categories_arr = $featured_categories->map(function ($featured_category) {
+            $featured_sub_categories = FeaturedSubCategory::where('featured_category_id', $featured_category->id)->select('id', 'name')->get();
+            $featured_sub_categories_arr = $featured_sub_categories->map(function ($featured_sub_category) {
+                return [
+                    'id' => $featured_sub_category->id,
+                    'name' => $featured_sub_category->name,
+                ];
+            });
+            return [
+                'id' => $featured_category->id,
+                'name' => $featured_category->name,
+                'featured_sub_categories_arr' => $featured_sub_categories_arr
+            ];
+        });
+
+        $vehicle_categories_arr = $vehicle_categories->map(function ($vehicle_category) {
+            return [
+                'id' => $vehicle_category->id,
+                'name' => $vehicle_category->name,
+            ];
+        });
+
+        $brand_id = $request->brand_id ? $request->brand_id : '';
+        $model_id = $request->model_id ? $request->model_id : '';
+        $year_id = $request->year_id ? $request->year_id : '';
+        $variant_id = $request->variant_id ? $request->variant_id : '';
+
+        $size_alternatives = '';
+        if ($model_id) {
+            $size_alternatives = DB::table('size_alternatives')->where('model_id', $model_id)->select('name')->orderBy('name', 'desc')->get()->toArray();
+        }
+        $brand = Brand::where('id', $brand_id)->select('name')->first();
+        $model = CarModel::where('id', $model_id)->select('name')->first();
+        $year = CarYear::where('id', $year_id)->select('name')->first();
+        $variant = CarVariant::where('id', $variant_id)->select('name')->first();
+
+        $your_vehicle = '';
+        if ($brand) {
+            $your_vehicle .= $brand->name;
+        }
+        if ($model) {
+            $your_vehicle .= ', ' . $model->name;
+        }
+        if ($year) {
+            $your_vehicle .= ', ' . $year->name;
+        }
+        if ($variant) {
+            $your_vehicle .= ', ' . $variant->name;
+        }
+
+        $size_cat_id = '';
+        $sub_cat_id = '';
+        $child_cat_id = '';
+
+        $products = Product::where('category_id', $category_id)
+        ->when(!empty($request->brand_id), function ($q) {
+            return $q->whereJsonContains('brand_id', request('brand_id'));
+        })
+        ->when(!empty($request->model_id), function ($q) {
+            return $q->whereJsonContains('model_id', request('model_id'));
+        })
+        ->when(!empty($request->year_id), function ($q) {
+            return $q->whereJsonContains('year_id', request('year_id'));
+        })
+        ->when(!empty($request->variant_id), function ($q) {
+            return $q->whereJsonContains('variant_id', request('variant_id'));
+        });
+
+        if ($request->size_cat_id) {
+            $size_cat_id = $request->size_cat_id;
+            $products = $products->where('size_category_id', $request->size_cat_id);
+        }
+        if ($request->sub_cat_id) {
+            $sub_cat_id = $request->sub_cat_id;
+            $products = $products->where('size_sub_category_id', $request->sub_cat_id);
+        }
+        if ($request->child_cat_id) {
+            $child_cat_id = $request->child_cat_id;
+            $products = $products->where('size_child_category_id', $request->child_cat_id);
+        }
+        if ($brand_filter != null) {
+            $products = $products->where('name', 'like', '%' . $brand_filter . '%');
+        }
+        if ($front_rear_filter != null) {
+            $products = $products->where('front_rear', $front_rear_filter);
+        }
+        if ($product_filter != null) {
+            $products = $products->where('featured_sub_cat_id', $product_filter);
+        }
+        if ($featured_id) {
+            $products = $products->where('featured_cat_id', $featured_id);
+        }
+        if ($sub_featured_id) {
+            $products = $products->where('featured_sub_cat_id', $sub_featured_id);
+        }
+        if ($vehicle_category_id) {
+            $products = $products->where('vehicle_cat_id', $vehicle_category_id);
+        }
+
+        switch ($sort_by) {
+            case 'oldest':
+                $products->orderBy('created_at', 'asc');
+                break;
+            case 'price-asc':
+                $products->orderBy('quantity_1_price', 'asc');
+                break;
+            case 'tyre-brand':
+                $products->orderByRaw("FIELD(tyre_service_brand_id , $request->brand) desc");
+                break;
+            default:
+                $products->orderBy('created_at', 'desc');
+                break;
+        }
+
+        $products = filter_products($products)->paginate(10)->appends(request()->query());
+        $products->getCollection()->transform(function ($product) {
+            $brand_photo = DB::table('brand_datas')->where('id', $product->tyre_service_brand_id)->select('photo')->first();
+            return [
+                'id' => $product->id,
+                'name' => $product->getTranslation('name'),
+                'thumbnail_image' => $product->thumbnail_img ? api_asset($product->thumbnail_img) : static_asset('assets/img/tyre.png'),
+                'discount_price' => home_discounted_base_price($product),
+                'base_price' => home_base_price($product),
+                'has_discount' => home_base_price($product) != home_discounted_base_price($product),
+                'rating' => $product->rating,
+                'sales' => (int) $product->num_of_sale,
+                'total_reviews' => $product->reviews->count(),
+                'tyre_size' => $product->tyre_size ?? '',
+                'brand_photo' => $brand_photo ? api_asset($brand_photo->photo) : '',
+            ];
+        });
+
+        $deals = Deal::where('type', $type)->where('status', 1)->select('id', 'start_date', 'end_date', 'text_color', 'banner')->get();
+        $deals = $deals->map(function ($deal) {
+            return [
+                'id' => $deal->id,
+                'title' => $deal->getTranslation('title'),
+                'text_color' => $deal->text_color,
+                'banner' => api_asset($deal->banner),
+            ];
+        });
+
+        return response()->json([
+            'result' => true,
+            'products' => $products,
+            'category_id' => $category_id,
+            'sort_by' => $sort_by ? $sort_by : '',
+            'brand_id' => $brand_id,
+            'model_id' => $model_id,
+            'year_id' => $year_id,
+            'variant_id' => $variant_id,
+            'your_vehicle' => $your_vehicle,
+            'featured_filters' => $featured_categories,
+            'featured_sub_filters' => FeaturedSubCategory::all(),
+            'lists' => $lists_arr,
+            'size_categories' => $size_categories,
+            'brands' => $brands,
+            'featured_categories_arr' => $featured_categories_arr,
+            'vehicle_categories' => $vehicle_categories_arr,
+            'size_alternatives' => $size_alternatives,
+            'size_cat_id' => $size_cat_id,
+            'sub_cat_id' => $sub_cat_id,
+            'child_cat_id' => $child_cat_id,
+            'brand_category' => $brand_category,
+            'deal_category' => $deals
+        ], 200);
+    }
+
     public function getSizeSubCats($size_cat_id)
     {
         $datas = SizeSubCategory::where('size_category_id', $size_cat_id)->orderBy('name','desc')->get();

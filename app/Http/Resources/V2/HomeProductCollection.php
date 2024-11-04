@@ -18,6 +18,7 @@ class HomeProductCollection extends ResourceCollection
                     'thumbnail_image' => $collection->thumbnail_image,
                     'discount_price' => $home_discounted_base_price,
                     // 'base_price' => $home_base_price,
+                    'brand_id' => $collection->brand_id,
                     'base_price' => 'RM --',
                     'has_discount' => ($home_base_price != $home_discounted_base_price),
                     'rating' => (float) $collection->rating,

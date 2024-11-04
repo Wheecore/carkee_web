@@ -14,7 +14,7 @@ class HomeCategoryController extends Controller
 {
     public function homePageData($user_id = null)
     {
-        $tyre_brands = DB::table('brand_datas')->where('brand_datas.type','tyre_brands')->leftJoin('uploads', 'uploads.id', '=', 'brand_datas.photo')->select(DB::raw("CONCAT('" . url('/') . "/public/', uploads.file_name) AS logo"))->orderBy('brand_datas.id', 'desc')->get()->toArray();
+        $tyre_brands = DB::table('brand_datas')->where('brand_datas.type','tyre_brands')->leftJoin('uploads', 'uploads.id', '=', 'brand_datas.photo')->select(DB::raw("CONCAT('" . url('/') . "/public/', uploads.file_name) AS logo, brand_datas.id as brand_id"))->orderBy('brand_datas.id', 'desc')->get()->toArray();
         $silders = DB::table('sliders')->leftJoin('uploads', 'uploads.id', '=', 'sliders.photo')->where('sliders.published', 1)->select(DB::raw("CONCAT('" . url('/') . "/public/', uploads.file_name) AS photo"), 'sliders.link')->get()->toArray();
         
         $promotion_products = new HomeProductCollection(Product::leftJoin('uploads', 'uploads.id', '=', 'products.thumbnail_img')
@@ -30,7 +30,7 @@ class HomeCategoryController extends Controller
         ->select(DB::raw("CONCAT('" . url('/') . "/public/', uploads.file_name) AS thumbnail_image"), 'products.id', 'products.name',
         'products.unit_price', 'products.discount_start_date', 'products.discount_end_date', 'products.discount_type',
         'products.discount', 'products.rating', 'products.num_of_sale','products.category_id','products.quantity_1_price',
-        'brand_datas.photo')->where('products.category_id', 1)
+        'brand_datas.id as brand_id', 'brand_datas.photo')->where('products.category_id', 1)
         ->where('products.published', 1)->orderBy('products.num_of_sale', 'desc')->limit(8)->get());
         
         $tyre_products = new HomeProductCollection(Product::leftJoin('uploads', 'uploads.id', '=', 'products.thumbnail_img')
@@ -38,14 +38,14 @@ class HomeCategoryController extends Controller
         ->select(DB::raw("CONCAT('" . url('/') . "/public/', uploads.file_name) AS thumbnail_image"), 'products.id', 'products.name',
         'products.unit_price', 'products.discount_start_date', 'products.discount_end_date', 'products.discount_type',
         'products.discount', 'products.rating', 'products.num_of_sale','products.category_id','products.quantity_1_price',
-        'brand_datas.photo')->where('products.category_id', 1)
+        'brand_datas.id as brand_id', 'brand_datas.photo')->where('products.category_id', 1)
         ->where('products.published', 1)->orderBy('products.num_of_sale', 'desc')->limit(8)->get());
        
         $service_products = new HomeProductCollection(Product::leftJoin('uploads', 'uploads.id', '=', 'products.thumbnail_img')
         ->leftJoin('brand_datas', 'brand_datas.id', '=', 'products.tyre_service_brand_id')
         ->select(DB::raw("CONCAT('" . url('/') . "/public/', uploads.file_name) AS thumbnail_image"), 'products.id', 'products.name',
         'products.unit_price', 'products.discount_start_date', 'products.discount_end_date', 'products.discount_type', 'products.discount',
-        'products.rating', 'products.num_of_sale','products.category_id','brand_datas.photo')
+        'products.rating', 'products.num_of_sale','products.category_id','brand_datas.id as brand_id','brand_datas.photo')
         ->where('products.category_id', 4)->where('products.published', 1)->orderBy('products.num_of_sale', 'desc')->limit(8)->get());
         
         $batteries_products = DB::table('batteries as b')
@@ -60,6 +60,7 @@ class HomeCategoryController extends Controller
         $categories = DB::table('categories')
         ->leftJoin('uploads', 'uploads.id', '=', 'categories.icon')
         ->select(DB::raw("CONCAT('" . url('/') . "/public/', uploads.file_name) AS icon"), 'categories.name as cat_name')
+        ->where('categories.active', 1)
         ->limit(4)
         ->get()
         ->toArray();

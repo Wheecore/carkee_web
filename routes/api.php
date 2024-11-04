@@ -226,6 +226,8 @@ Route::prefix('v2')->group(function () {
     Route::get('contact_us/webview', 'Api\V2\HomeCategoryController@contactus_webview');
 
     Route::get('category/{category_id}/{user_id?}', 'Api\V2\CartController@tyrePageData');
+    Route::get('categories/{category_name}/{user_id?}', 'Api\V2\CartController@categoryPageData');
+
     // width
     Route::get('get-size-sub-cats/{size_cat_id}', 'Api\V2\CartController@getSizeSubCats');
     // height
