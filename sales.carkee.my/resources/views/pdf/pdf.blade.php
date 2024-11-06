@@ -16,11 +16,9 @@
 </head>
 
 <body style="background-color: #fff; font-family: system-ui;">
-    @if ($type != 'invoice')
-        <div class="qr-code">
-          <img src="{{ $qrCode }}" alt="QR Code">
-        </div>
-    @endif
+    <div class="qr-code">
+      <img src="{{ $qrCode }}" alt="QR Code">
+    </div>
     <table align="center" cellpadding="0" cellspacing="0" style="color: #000; width: 100%;">
         <tbody>
             <tr>
@@ -45,7 +43,7 @@
                 <td width="50%">
                     <div style="text-align: right;">
                         @if ($type == 'invoice')
-                            <h5 style="margin: unset; font-size: 18px;">INVOICE</h5>
+                            <h5 style="margin: unset; font-size: 18px;">SALES ORDER</h5>
                         @else
                             <h5 style="margin: unset; font-size: 18px;">DELIVERY ORDER</h5>
                         @endif

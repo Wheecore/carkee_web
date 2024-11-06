@@ -865,6 +865,7 @@ class CartController extends Controller
         $model_id = $request->model_id ? $request->model_id : '';
         $year_id = $request->year_id ? $request->year_id : '';
         $variant_id = $request->variant_id ? $request->variant_id : '';
+        $brand_data_id = $request->brand_data_id ? $request->brand_data_id : '';
 
         $size_alternatives = '';
         if ($model_id) {
@@ -874,6 +875,7 @@ class CartController extends Controller
         $model = CarModel::where('id', $model_id)->select('name')->first();
         $year = CarYear::where('id', $year_id)->select('name')->first();
         $variant = CarVariant::where('id', $variant_id)->select('name')->first();
+        $brand_data = DB::table('brand_datas')->where('id', $brand_data_id)->select('name')->first();
 
         $your_vehicle = '';
         if ($brand) {
@@ -903,7 +905,11 @@ class CartController extends Controller
         })
         ->when(!empty($request->variant_id), function ($q) {
             return $q->whereJsonContains('variant_id', request('variant_id'));
+        })
+        ->when(!empty($request->brand_data_id), function ($q) {
+            return $q->where('tyre_service_brand_id', request('brand_data_id'));
         });
+        
         if ($request->size_cat_id) {
             $size_cat_id = $request->size_cat_id;
             $products = $products->where('size_category_id', $request->size_cat_id);
@@ -1027,26 +1033,29 @@ class CartController extends Controller
         $vehicle_categories = VehicleCategory::select('id', 'name')->get();
         $size_categories = SizeCategory::select('id', 'name')->orderBy('name', 'desc')->get();
         $brands = Brand::orderBy('name', 'asc')->select('id', 'name')->get();
-        $brand_category = DB::table('brand_datas')->where('type','tyre_brands')->select('id', 'name')->get();
 
         switch ($category_name) {
             case 'tyres':
                 $category = 'tyre';
                 $category_brands = 'tyre_brands';
                 $type = 'tyre';
+                $img = 'assets/img/tyre.png';
                 break;
             case 'parts':
                 $category = 'part';
                 $category_brands = 'part_brands';
                 $type = 'part';
+                $img = 'assets/img/part.png';
                 break;
             case 'carwash':
                 $category = 'car wash';
                 $category_brands = 'carwash_brands';
                 $type = 'car_wash';
+                $img = 'assets/img/carwash.png';
                 break;
         }
 
+        $brand_category = DB::table('brand_datas')->where('type', $category_brands)->select('id', 'name')->get();
         $category_id = Category::where('name', $category)->select('id')->first();
         $category_id = $category_id->id;
         $category_brands = DB::table('brand_datas')->where('type', $category_brands)->select('id', 'name')->get();
@@ -1108,6 +1117,7 @@ class CartController extends Controller
         $model_id = $request->model_id ? $request->model_id : '';
         $year_id = $request->year_id ? $request->year_id : '';
         $variant_id = $request->variant_id ? $request->variant_id : '';
+        $brand_data_id = $request->brand_data_id ? $request->brand_data_id : '';
 
         $size_alternatives = '';
         if ($model_id) {
@@ -1117,6 +1127,7 @@ class CartController extends Controller
         $model = CarModel::where('id', $model_id)->select('name')->first();
         $year = CarYear::where('id', $year_id)->select('name')->first();
         $variant = CarVariant::where('id', $variant_id)->select('name')->first();
+        $brand_data = DB::table('brand_datas')->where('id', $brand_data_id)->select('name')->first();
 
         $your_vehicle = '';
         if ($brand) {
@@ -1148,6 +1159,9 @@ class CartController extends Controller
         })
         ->when(!empty($request->variant_id), function ($q) {
             return $q->whereJsonContains('variant_id', request('variant_id'));
+        })
+        ->when(!empty($request->brand_data_id), function ($q) {
+            return $q->whereJsonContains('tyre_service_brand_id', request('brand_data_id'));
         });
 
         if ($request->size_cat_id) {
@@ -1197,12 +1211,12 @@ class CartController extends Controller
         }
 
         $products = filter_products($products)->paginate(10)->appends(request()->query());
-        $products->getCollection()->transform(function ($product) {
+        $products->getCollection()->transform(function ($product)use ($img) {
             $brand_photo = DB::table('brand_datas')->where('id', $product->tyre_service_brand_id)->select('photo')->first();
             return [
                 'id' => $product->id,
                 'name' => $product->getTranslation('name'),
-                'thumbnail_image' => $product->thumbnail_img ? api_asset($product->thumbnail_img) : static_asset('assets/img/tyre.png'),
+                'thumbnail_image' => $product->thumbnail_img ? api_asset($product->thumbnail_img) : static_asset($img),
                 'discount_price' => home_discounted_base_price($product),
                 'base_price' => home_base_price($product),
                 'has_discount' => home_base_price($product) != home_discounted_base_price($product),
