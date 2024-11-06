@@ -1033,7 +1033,6 @@ class CartController extends Controller
         $vehicle_categories = VehicleCategory::select('id', 'name')->get();
         $size_categories = SizeCategory::select('id', 'name')->orderBy('name', 'desc')->get();
         $brands = Brand::orderBy('name', 'asc')->select('id', 'name')->get();
-        $brand_category = DB::table('brand_datas')->where('type','tyre_brands')->select('id', 'name')->get();
 
         switch ($category_name) {
             case 'tyres':
@@ -1056,6 +1055,7 @@ class CartController extends Controller
                 break;
         }
 
+        $brand_category = DB::table('brand_datas')->where('type', $category_brands)->select('id', 'name')->get();
         $category_id = Category::where('name', $category)->select('id')->first();
         $category_id = $category_id->id;
         $category_brands = DB::table('brand_datas')->where('type', $category_brands)->select('id', 'name')->get();
