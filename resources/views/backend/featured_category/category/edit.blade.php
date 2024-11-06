@@ -6,7 +6,8 @@
         <div class="card">
             <div class="card-header row gutters-5">
                 <h5 class="mb-md-0 h6">{{ translate('Featured Category Information') }}</h5>
-                <a class="btn btn-primary" href="{{ route('featured.categories') }}"><i class="las la-arrow-left mr-1"></i>Back</a>
+                <a class="btn btn-primary" href="{{ route('featured.categories') }}"><i
+                        class="las la-arrow-left mr-1"></i>Back</a>
             </div>
             <div class="card-body p-0">
                 <form class="p-4" action="{{ route('featured.category.update', $data->id) }}" method="POST"
@@ -20,6 +21,18 @@
                         <div class="col-sm-9">
                             <input type="text" placeholder="{{ translate('Name') }}" id="name" name="name"
                                 value="{{ $data->name }}" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <!-- dropdown select box -->
+                        <label class="col-sm-3 col-from-label" for="type">{{ translate('Category') }}</label>
+                        <div class="col-sm-9">
+                                  <select class="form-control aiz-selectpicker" name="type" required>
+                                <option value="">{{ translate('Select One') }}</option>
+                                @foreach ($types as $key => $value)
+                                    <option value="{{ $key }}" {{ $data->type == $key ? 'selected' : '' }}>{{ $value }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="form-group mb-0 text-right">
