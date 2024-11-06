@@ -1042,7 +1042,7 @@ class CartController extends Controller
                 $img = 'assets/img/tyre.png';
                 break;
             case 'parts':
-                $category = 'part';
+                $category = 'parts';
                 $category_brands = 'part_brands';
                 $type = 'part';
                 $img = 'assets/img/part.png';
