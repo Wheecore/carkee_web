@@ -67,7 +67,17 @@
                         @csrf
                         <div class="form-group mb-3">
                             <label for="name">{{ translate('Name') }}</label>
-                            <input type="text" placeholder="{{ translate('Name') }}" name="name" class="form-control" required>
+                            <input type="text" placeholder="{{ translate('Name') }}" name="name" class="form-control"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label for="type">{{ translate('Type') }}</label>
+                            <select class="form-control aiz-selectpicker" name="type" required>
+                                <option value="">{{ translate('Select One') }}</option>
+                                @foreach ($types as $key => $value)
+                                    <option value="{{ $key }}">{{ $value }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="form-group mb-3 text-right">
                             <button type="submit" class="btn btn-primary">{{ translate('Save') }}</button>

@@ -73,6 +73,72 @@ function get_all_tyres() {
     });
 }
 
+function get_all_parts_carwash(categories_name) {
+    let name = "parts"; // Default name
+    if (categories_name == "Car Wash") {
+        name = "carwash";
+    }
+
+    // Use template literals to dynamically set the class and ID selectors
+    $(`.btn-${name}-filter`).find('.spinner-border').removeClass('d-none');
+    $.post(SITE_URL + '/admin/get-all-parts', {
+        _token: CSRF,
+        brand_id: $('#brand_id').val(),
+        model_id: $('#model_id').val(),
+        year_id: $('#year_id').val(),
+        variant_id: $('#variant_id').val(),
+        sub_category_id: $('#featured_cat_id').val(),
+        sub_child_category_id: $('#featured_sub_cat_id').val(),
+        size_cat_id: $('#size_cat_id').val(),
+        sub_cat_id: $('#sub_cat_id').val(),
+        child_cat_id: $('#child_cat_id').val(),
+        categories_name: categories_name,
+        name: name        
+    }, function (data) {
+        $(`.btn-${name}-filter`).find('.spinner-border').addClass('d-none');
+
+        // Use template literals for the table selector
+        $(`#tbl-${name} tbody`).empty();
+        $(`#tbl-${name} tbody`).append(data);
+
+        var searchIDs = $(`#tbl-${name}s input:checkbox:checked`).map(function () {
+            return $(this).val();
+        }).get();
+        $(`#added_${name}`).val(searchIDs.join(","));
+    });
+}
+
+
+// function get_all_parts_carwash(categories_name) {
+//     let categories_name = "Parts";
+//     let name = "part";
+//     if (categories_name =="Car Wash") {
+//         name = "carwash";
+//     }
+//     $('.btn-part-filter').find('.spinner-border').removeClass('d-none');
+//     $.post(SITE_URL + '/admin/get-all-parts', {
+//         _token: CSRF,
+//         brand_id: $('#brand_id').val(),
+//         model_id: $('#model_id').val(),
+//         year_id: $('#year_id').val(),
+//         variant_id: $('#variant_id').val(),
+//         sub_category_id: $('#featured_cat_id').val(),
+//         sub_child_category_id: $('#featured_sub_cat_id').val(),
+//         size_cat_id: $('#size_cat_id').val(),
+//         sub_cat_id: $('#sub_cat_id').val(),
+//         child_cat_id: $('#child_cat_id').val(),
+//         categories_name: categories_name,
+//     }, function(data) {
+//         $('.btn-part-filter').find('.spinner-border').addClass('d-none');
+//         $('#tbl-parts tbody').empty();
+//         $('#tbl-parts tbody').append(data);
+//         var searchIDs = $("#tbl-parts input:checkbox:checked").map(function(){
+//             return $(this).val();
+//         }).get();
+//         $('#added_parts').val(searchIDs.join(","));
+//     });
+// }
+
 function get_all_batteries() {
     $('.btn-battery-filter').find('.spinner-border').removeClass('d-none');
     $.post(SITE_URL + '/admin/get-all-batteries', {

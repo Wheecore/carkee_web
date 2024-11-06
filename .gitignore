@@ -1,8 +1,11 @@
 .env
 .env.example
+/public/uploads
 /vendor
 /temp
 /.idea
 /.vscode
 /.vagrant
 node_modules
+**/public/qr-codes/*
+!**/public/qr-codes/*.md

@@ -3,7 +3,7 @@
     $user = Auth::user();
     if ($user->staff) {
         $permissions = json_decode($user->staff->role->permissions);
-        $permissions = (!is_null($permissions))?$permissions:[];
+        $permissions = !is_null($permissions) ? $permissions : [];
     }
 @endphp
 <div class="aiz-sidebar-wrap">
@@ -14,15 +14,18 @@
                     $header_logo = get_setting('header_logo');
                 @endphp
                 @if ($header_logo != null)
-                    <img src="{{ uploaded_asset($header_logo) }}" alt="{{ get_setting('site_name') }}" class="mw-100 brand-icon">
+                    <img src="{{ uploaded_asset($header_logo) }}" alt="{{ get_setting('site_name') }}"
+                        class="mw-100 brand-icon">
                 @else
-                    <img src="{{ static_asset('assets/img/logo.png') }}" alt="{{ get_setting('site_name') }}" class="mw-100 brand-icon">
+                    <img src="{{ static_asset('assets/img/logo.png') }}" alt="{{ get_setting('site_name') }}"
+                        class="mw-100 brand-icon">
                 @endif
             </a>
         </div>
         <div class="aiz-side-nav-wrap">
             <div class="px-20px mb-3">
-                <input class="form-control bg-soft-secondary border-0 form-control-sm text-white" type="text" placeholder="{{ translate('Search in menu') }}" id="menu-search" onkeyup="menuSearch()">
+                <input class="form-control bg-soft-secondary border-0 form-control-sm text-white" type="text"
+                    placeholder="{{ translate('Search in menu') }}" id="menu-search" onkeyup="menuSearch()">
             </div>
             <ul class="aiz-side-nav-list" id="search-menu">
             </ul>
@@ -112,13 +115,13 @@
                     </li>
                 @endif
 
-                {{--<li class="aiz-side-nav-item">
+                {{-- <li class="aiz-side-nav-item">
                     <a href="{{ route('categories.index') }}"
                         class="aiz-side-nav-link {{ areActiveRoutesAdmin(['categories.index', 'categories.create', 'categories.edit']) }}">
                         <i class="las la-list aiz-side-nav-icon"></i>
                         <span class="aiz-side-nav-text">{{ translate('Products Categories') }}</span>
                     </a>
-                </li>--}}
+                </li> --}}
 
                 @if ($user->user_type == 'admin' || in_array(10, $permissions))
                     <li class="aiz-side-nav-item">
@@ -128,7 +131,7 @@
                         </a>
                     </li>
                 @endif
-                
+
                 <!-- Car Data -->
                 <li class="side-nav-title">{{ translate('Brands Data') }}</li>
                 @if ($user->user_type == 'admin' || in_array(11, $permissions))
@@ -243,27 +246,45 @@
                                     </a>
                                 </li>
                             @endif
+                                <li class="aiz-side-nav-item">
+                                    <a class="aiz-side-nav-link" href="{{ route('add-parts-carwash') }}">
+                                        <span class="aiz-side-nav-text">{{ translate('Add New Parts/Car Wash') }}</span>
+                                    </a>
+                                </li>
+
                         </ul>
                     </li>
                 @endif
-        
+
                 @if ($user->user_type == 'admin' || in_array(25, $permissions))
                     @php
-                        $orders_count = DB::table('orders')->where('admin_viewed', 0)->where('order_type', 'N')->selectRaw("COUNT(CASE delivery_status WHEN 'Done' THEN 1 END) AS done_orders, COUNT(CASE user_date_update WHEN 1 THEN 1 END) AS reschedule_orders, COUNT(CASE WHEN (reassign_status = 2) THEN 1 END) AS reassign_orders, COUNT(CASE WHEN (reassign_status != 2 AND user_date_update != 1 AND delivery_status != 'Done') THEN 1 END) AS other_orders")->first();
+                        $orders_count = DB::table('orders')
+                            ->where('admin_viewed', 0)
+                            ->where('order_type', 'N')
+                            ->selectRaw(
+                                "COUNT(CASE delivery_status WHEN 'Done' THEN 1 END) AS done_orders, COUNT(CASE user_date_update WHEN 1 THEN 1 END) AS reschedule_orders, COUNT(CASE WHEN (reassign_status = 2) THEN 1 END) AS reassign_orders, COUNT(CASE WHEN (reassign_status != 2 AND user_date_update != 1 AND delivery_status != 'Done') THEN 1 END) AS other_orders",
+                            )
+                            ->first();
                     @endphp
                     <li class="aiz-side-nav-item">
                         <a href="#" class="aiz-side-nav-link">
                             <i class="las la-shopping-cart aiz-side-nav-icon"></i>
                             <span class="aiz-side-nav-text">{{ translate('Orders') }}</span>
-                            @if ($orders_count->done_orders > 0 || $orders_count->reschedule_orders > 0 || $orders_count->reassign_orders > 0 || $orders_count->other_orders > 0)
-                                <span class="badge badge-info">{{ $orders_count->done_orders + $orders_count->reschedule_orders + $orders_count->reassign_orders + $orders_count->other_orders }}</span>
+                            @if (
+                                $orders_count->done_orders > 0 ||
+                                    $orders_count->reschedule_orders > 0 ||
+                                    $orders_count->reassign_orders > 0 ||
+                                    $orders_count->other_orders > 0)
+                                <span
+                                    class="badge badge-info">{{ $orders_count->done_orders + $orders_count->reschedule_orders + $orders_count->reassign_orders + $orders_count->other_orders }}</span>
                             @endif
                             <span class="aiz-side-nav-arrow"></span>
                         </a>
                         <ul class="aiz-side-nav-list level-2">
                             @if ($user->user_type == 'admin' || in_array(26, $permissions))
                                 <li class="aiz-side-nav-item">
-                                    <a href="{{ route('all_orders.index') }}" class="aiz-side-nav-link {{ areActiveRoutesAdmin(['all_orders.index', 'all_orders.show']) }}">
+                                    <a href="{{ route('all_orders.index') }}"
+                                        class="aiz-side-nav-link {{ areActiveRoutesAdmin(['all_orders.index', 'all_orders.show']) }}">
                                         <span class="aiz-side-nav-text">{{ translate('New Orders') }}</span>
                                         @if ($orders_count->other_orders > 0)
                                             <span class="badge badge-info">{{ $orders_count->other_orders }}</span>
@@ -273,7 +294,8 @@
                             @endif
                             @if ($user->user_type == 'admin' || in_array(27, $permissions))
                                 <li class="aiz-side-nav-item">
-                                    <a href="{{ route('done.orders.list') }}" class="aiz-side-nav-link {{ areActiveRoutesAdmin(['done.orders.list', 'done.orders.list']) }}">
+                                    <a href="{{ route('done.orders.list') }}"
+                                        class="aiz-side-nav-link {{ areActiveRoutesAdmin(['done.orders.list', 'done.orders.list']) }}">
                                         <span class="aiz-side-nav-text">{{ translate('Done Orders list') }}</span>
                                         @if ($orders_count->done_orders > 0)
                                             <span class="badge badge-info">{{ $orders_count->done_orders }}</span>
@@ -283,17 +305,21 @@
                             @endif
                             @if ($user->user_type == 'admin' || in_array(28, $permissions))
                                 <li class="aiz-side-nav-item">
-                                    <a href="{{ route('update_date_orders') }}" class="aiz-side-nav-link {{ areActiveRoutesAdmin(['update_date_orders', 'all_orders.show']) }}">
-                                        <span class="aiz-side-nav-text">{{ translate('Reschedule Date Orders') }}</span>
+                                    <a href="{{ route('update_date_orders') }}"
+                                        class="aiz-side-nav-link {{ areActiveRoutesAdmin(['update_date_orders', 'all_orders.show']) }}">
+                                        <span
+                                            class="aiz-side-nav-text">{{ translate('Reschedule Date Orders') }}</span>
                                         @if ($orders_count->reschedule_orders > 0)
-                                            <span class="badge badge-info">{{ $orders_count->reschedule_orders }}</span>
+                                            <span
+                                                class="badge badge-info">{{ $orders_count->reschedule_orders }}</span>
                                         @endif
                                     </a>
                                 </li>
                             @endif
                             @if ($user->user_type == 'admin' || in_array(29, $permissions))
                                 <li class="aiz-side-nav-item">
-                                    <a href="{{ route('re-assign.orders') }}" class="aiz-side-nav-link {{ areActiveRoutesAdmin(['re-assign.orders', 'all_orders.show']) }}">
+                                    <a href="{{ route('re-assign.orders') }}"
+                                        class="aiz-side-nav-link {{ areActiveRoutesAdmin(['re-assign.orders', 'all_orders.show']) }}">
                                         <span class="aiz-side-nav-text">{{ translate('Reassign Orders') }}</span>
                                         @if ($orders_count->reassign_orders > 0)
                                             <span class="badge badge-info">{{ $orders_count->reassign_orders }}</span>
@@ -332,7 +358,8 @@
 
                 <li class="side-nav-title">{{ translate('Services') }}</li>
                 @if ($user->user_type == 'admin' || in_array(32, $permissions))
-                    <li class="aiz-side-nav-item {{ areActiveRoutesAdmin(['package.index', 'package.create', 'package.edit', 'package.products.edit', 'package.products.addon.edit']) }}">
+                    <li
+                        class="aiz-side-nav-item {{ areActiveRoutesAdmin(['package.index', 'package.create', 'package.edit', 'package.products.edit', 'package.products.addon.edit']) }}">
                         <a href="#" class="aiz-side-nav-link">
                             <i class="las la-bullhorn aiz-side-nav-icon"></i>
                             <span class="aiz-side-nav-text">{{ translate('Services') }}</span>
@@ -370,7 +397,7 @@
                         </ul>
                     </li>
                 @endif
-                    
+
                 {{-- <li class="aiz-side-nav-item">
                     <a href="#" class="aiz-side-nav-link">
                         <i class="las la-list-ul aiz-side-nav-icon"></i>
@@ -410,15 +437,18 @@
                             @endif
                             @if ($user->user_type == 'admin' || in_array(36, $permissions))
                                 <li class="aiz-side-nav-item">
-                                    <a href="{{ route('battery-sub-categories.index') }}" class="aiz-side-nav-link {{ areActiveRoutesAdmin(['battery-sub-categories.index']) }}">
+                                    <a href="{{ route('battery-sub-categories.index') }}"
+                                        class="aiz-side-nav-link {{ areActiveRoutesAdmin(['battery-sub-categories.index']) }}">
                                         <span class="aiz-side-nav-text">{{ translate('Sub Categories') }}</span>
                                     </a>
                                 </li>
                             @endif
                             @if ($user->user_type == 'admin' || in_array(37, $permissions))
                                 <li class="aiz-side-nav-item">
-                                    <a href="{{ route('battery-sub-child-categories.index') }}" class="aiz-side-nav-link {{ areActiveRoutesAdmin(['battery-sub-child-categories.index']) }}">
-                                        <span class="aiz-side-nav-text">{{ translate('Sub Child Categories') }}</span>
+                                    <a href="{{ route('battery-sub-child-categories.index') }}"
+                                        class="aiz-side-nav-link {{ areActiveRoutesAdmin(['battery-sub-child-categories.index']) }}">
+                                        <span
+                                            class="aiz-side-nav-text">{{ translate('Sub Child Categories') }}</span>
                                     </a>
                                 </li>
                             @endif
@@ -476,14 +506,23 @@
 
                 @if ($user->user_type == 'admin' || in_array(42, $permissions))
                     @php
-                        $emergency_orders_count = DB::table('orders')->where('admin_viewed', 0)->selectRaw("COUNT(CASE order_type WHEN 'B' THEN 1 END) AS battery_orders, COUNT(CASE order_type WHEN 'T' THEN 1 END) AS tyre_orders, COUNT(CASE order_type WHEN 'P' THEN 1 END) AS petrol_orders")->first();
+                        $emergency_orders_count = DB::table('orders')
+                            ->where('admin_viewed', 0)
+                            ->selectRaw(
+                                "COUNT(CASE order_type WHEN 'B' THEN 1 END) AS battery_orders, COUNT(CASE order_type WHEN 'T' THEN 1 END) AS tyre_orders, COUNT(CASE order_type WHEN 'P' THEN 1 END) AS petrol_orders",
+                            )
+                            ->first();
                     @endphp
                     <li class="aiz-side-nav-item">
                         <a href="#" class="aiz-side-nav-link">
                             <i class="las la-shopping-cart aiz-side-nav-icon"></i>
                             <span class="aiz-side-nav-text">{{ translate('Emergency Orders') }}</span>
-                            @if ($emergency_orders_count->battery_orders > 0 || $emergency_orders_count->tyre_orders > 0 || $emergency_orders_count->petrol_orders > 0)
-                                <span class="badge badge-info">{{ $emergency_orders_count->battery_orders + $emergency_orders_count->tyre_orders + $emergency_orders_count->petrol_orders }}</span>
+                            @if (
+                                $emergency_orders_count->battery_orders > 0 ||
+                                    $emergency_orders_count->tyre_orders > 0 ||
+                                    $emergency_orders_count->petrol_orders > 0)
+                                <span
+                                    class="badge badge-info">{{ $emergency_orders_count->battery_orders + $emergency_orders_count->tyre_orders + $emergency_orders_count->petrol_orders }}</span>
                             @endif
                             <span class="aiz-side-nav-arrow"></span>
                         </a>
@@ -494,7 +533,8 @@
                                         class="aiz-side-nav-link {{ areActiveRoutesAdmin(['battery_orders.index', 'battery_orders.show']) }}">
                                         <span class="aiz-side-nav-text">{{ translate('Battery Orders') }}</span>
                                         @if ($emergency_orders_count->battery_orders > 0)
-                                            <span class="badge badge-info">{{ $emergency_orders_count->battery_orders }}</span>
+                                            <span
+                                                class="badge badge-info">{{ $emergency_orders_count->battery_orders }}</span>
                                         @endif
                                     </a>
                                 </li>
@@ -505,7 +545,8 @@
                                         class="aiz-side-nav-link {{ areActiveRoutesAdmin(['tyre_orders.index', 'tyre_orders.show']) }}">
                                         <span class="aiz-side-nav-text">{{ translate('Tyre Orders') }}</span>
                                         @if ($emergency_orders_count->tyre_orders > 0)
-                                            <span class="badge badge-info">{{ $emergency_orders_count->tyre_orders }}</span>
+                                            <span
+                                                class="badge badge-info">{{ $emergency_orders_count->tyre_orders }}</span>
                                         @endif
                                     </a>
                                 </li>
@@ -516,7 +557,8 @@
                                         class="aiz-side-nav-link {{ areActiveRoutesAdmin(['petrol_orders.index', 'petrol_orders.show']) }}">
                                         <span class="aiz-side-nav-text">{{ translate('Petrol Orders') }}</span>
                                         @if ($emergency_orders_count->petrol_orders > 0)
-                                            <span class="badge badge-info">{{ $emergency_orders_count->petrol_orders }}</span>
+                                            <span
+                                                class="badge badge-info">{{ $emergency_orders_count->petrol_orders }}</span>
                                         @endif
                                     </a>
                                 </li>
@@ -599,7 +641,8 @@
                 @endif
 
                 @if ($user->user_type == 'admin' || in_array(56, $permissions))
-                    <li class="aiz-side-nav-item {{ areActiveRoutesAdmin(['car-wash-technicians.index', 'car-wash-technicians.create', 'car-wash-technicians.show', 'car-wash-technicians.edit']) }}">
+                    <li
+                        class="aiz-side-nav-item {{ areActiveRoutesAdmin(['car-wash-technicians.index', 'car-wash-technicians.create', 'car-wash-technicians.show', 'car-wash-technicians.edit']) }}">
                         <a href="#" class="aiz-side-nav-link">
                             <i class="las la-user-friends aiz-side-nav-icon"></i>
                             <span class="aiz-side-nav-text">{{ translate('Car Wash Technicians') }}</span>
@@ -610,7 +653,8 @@
                                 <li class="aiz-side-nav-item">
                                     <a href="{{ route('car-wash-technicians.index') }}"
                                         class="aiz-side-nav-link {{ areActiveRoutesAdmin(['car-wash-technicians.index', 'car-wash-technicians.create', 'car-wash-technicians.show', 'car-wash-technicians.edit']) }}">
-                                        <span class="aiz-side-nav-text">{{ translate('Car Wash Technicians') }}</span>
+                                        <span
+                                            class="aiz-side-nav-text">{{ translate('Car Wash Technicians') }}</span>
                                     </a>
                                 </li>
                             @endif
@@ -618,7 +662,8 @@
                                 <li class="aiz-side-nav-item">
                                     <a href="{{ route('car-wash-technicians.create') }}"
                                         class="aiz-side-nav-link {{ areActiveRoutesAdmin(['car-wash-technicians.index', 'car-wash-technicians.create', 'car-wash-technicians.show', 'car-wash-technicians.edit']) }}">
-                                        <span class="aiz-side-nav-text">{{ translate('Add Car Wash Technician') }}</span>
+                                        <span
+                                            class="aiz-side-nav-text">{{ translate('Add Car Wash Technician') }}</span>
                                     </a>
                                 </li>
                             @endif
@@ -642,18 +687,21 @@
                                         <span class="aiz-side-nav-text">{{ translate('Customer list') }}</span>
                                     </a>
                                 </li>
-                            @endif   
+                            @endif
                             @if ($user->user_type == 'admin' || in_array(90, $permissions))
                                 <li class="aiz-side-nav-item">
-                                    <a href="{{ route('customers.wallet_transactions') }}" class="aiz-side-nav-link">
-                                        <span class="aiz-side-nav-text">{{ translate('Customers Wallet Transactions') }}</span>
+                                    <a href="{{ route('customers.wallet_transactions') }}"
+                                        class="aiz-side-nav-link">
+                                        <span
+                                            class="aiz-side-nav-text">{{ translate('Customers Wallet Transactions') }}</span>
                                     </a>
                                 </li>
-                            @endif           
+                            @endif
                             @if ($user->user_type == 'admin' || in_array(59, $permissions))
                                 <li class="aiz-side-nav-item">
                                     <a href="{{ route('customer.car.condition') }}" class="aiz-side-nav-link">
-                                        <span class="aiz-side-nav-text">{{ translate('Customer Car Condition list') }}</span>
+                                        <span
+                                            class="aiz-side-nav-text">{{ translate('Customer Car Condition list') }}</span>
                                     </a>
                                 </li>
                             @endif
@@ -679,7 +727,8 @@
                         <ul class="aiz-side-nav-list level-2">
                             @if ($user->user_type == 'admin' || in_array(60, $permissions))
                                 <li class="aiz-side-nav-item">
-                                    <a href="{{ route('sellers.index') }}" class="aiz-side-nav-link {{ areActiveRoutesAdmin(['sellers.index', 'sellers.create', 'sellers.edit', 'sellers.approved', 'sellers.profile_modal']) }}">
+                                    <a href="{{ route('sellers.index') }}"
+                                        class="aiz-side-nav-link {{ areActiveRoutesAdmin(['sellers.index', 'sellers.create', 'sellers.edit', 'sellers.approved', 'sellers.profile_modal']) }}">
                                         <span class="aiz-side-nav-text">{{ translate('All Workshops') }}</span>
                                         @if ($sellers > 0)
                                             <span class="badge badge-info">{{ $sellers }}</span>
@@ -689,8 +738,10 @@
                             @endif
                             @if ($user->user_type == 'admin' || in_array(61, $permissions))
                                 <li class="aiz-side-nav-item">
-                                    <a href="{{ route('sellers.availability-requests') }}" class="aiz-side-nav-link {{ areActiveRoutesAdmin(['sellers.availability-requests']) }}">
-                                        <span class="aiz-side-nav-text">{{ translate('Workshops Availability Requests') }}</span>
+                                    <a href="{{ route('sellers.availability-requests') }}"
+                                        class="aiz-side-nav-link {{ areActiveRoutesAdmin(['sellers.availability-requests']) }}">
+                                        <span
+                                            class="aiz-side-nav-text">{{ translate('Workshops Availability Requests') }}</span>
                                         @if ($requests > 0)
                                             <span class="badge badge-info">{{ $requests }}</span>
                                         @endif
@@ -712,21 +763,24 @@
                         <ul class="aiz-side-nav-list level-2">
                             @if ($user->user_type == 'admin' || in_array(63, $permissions))
                                 <li class="aiz-side-nav-item">
-                                    <a href="{{ route('merchant.categories') }}" class="aiz-side-nav-link {{ areActiveRoutesAdmin(['merchant.categories', 'merchant.categories.edit']) }}">
+                                    <a href="{{ route('merchant.categories') }}"
+                                        class="aiz-side-nav-link {{ areActiveRoutesAdmin(['merchant.categories', 'merchant.categories.edit']) }}">
                                         <span class="aiz-side-nav-text">{{ translate('Merchant Categories') }}</span>
                                     </a>
                                 </li>
                             @endif
                             @if ($user->user_type == 'admin' || in_array(64, $permissions))
                                 <li class="aiz-side-nav-item">
-                                    <a href="{{ route('merchants.index') }}" class="aiz-side-nav-link {{ areActiveRoutesAdmin(['merchants.index', 'merchants.create', 'merchants.edit']) }}">
+                                    <a href="{{ route('merchants.index') }}"
+                                        class="aiz-side-nav-link {{ areActiveRoutesAdmin(['merchants.index', 'merchants.create', 'merchants.edit']) }}">
                                         <span class="aiz-side-nav-text">{{ translate('All Merchants') }}</span>
                                     </a>
                                 </li>
                             @endif
                             @if ($user->user_type == 'admin' || in_array(65, $permissions))
                                 <li class="aiz-side-nav-item">
-                                    <a href="{{ route('merchants-vouchers.index') }}" class="aiz-side-nav-link {{ areActiveRoutesAdmin(['merchants-vouchers.index', 'merchants-vouchers.create', 'merchants-vouchers.edit']) }}">
+                                    <a href="{{ route('merchants-vouchers.index') }}"
+                                        class="aiz-side-nav-link {{ areActiveRoutesAdmin(['merchants-vouchers.index', 'merchants-vouchers.create', 'merchants-vouchers.edit']) }}">
                                         <span class="aiz-side-nav-text">{{ translate('Merchants Vouchers') }}</span>
                                     </a>
                                 </li>
@@ -746,14 +800,16 @@
                         <ul class="aiz-side-nav-list level-2">
                             @if ($user->user_type == 'admin' || in_array(66, $permissions))
                                 <li class="aiz-side-nav-item">
-                                    <a href="{{ route('staffs.index') }}" class="aiz-side-nav-link {{ areActiveRoutesAdmin(['staffs.index', 'staffs.create', 'staffs.edit']) }}">
+                                    <a href="{{ route('staffs.index') }}"
+                                        class="aiz-side-nav-link {{ areActiveRoutesAdmin(['staffs.index', 'staffs.create', 'staffs.edit']) }}">
                                         <span class="aiz-side-nav-text">{{ translate('All staffs') }}</span>
                                     </a>
                                 </li>
                             @endif
                             @if ($user->user_type == 'admin' || in_array(68, $permissions))
                                 <li class="aiz-side-nav-item">
-                                    <a href="{{ route('roles.index') }}" class="aiz-side-nav-link {{ areActiveRoutesAdmin(['roles.index', 'roles.create', 'roles.edit']) }}">
+                                    <a href="{{ route('roles.index') }}"
+                                        class="aiz-side-nav-link {{ areActiveRoutesAdmin(['roles.index', 'roles.create', 'roles.edit']) }}">
                                         <span class="aiz-side-nav-text">{{ translate('Staff permissions') }}</span>
                                     </a>
                                 </li>
@@ -763,28 +819,31 @@
                 @endif
 
                 <li class="side-nav-title">{{ translate('Payments') }}</li>
-                    @if ($user->user_type == 'admin' || in_array(69, $permissions))
-                        <li class="aiz-side-nav-item">
-                            <a href="{{ route('reschedule.payments') }}" class="aiz-side-nav-link {{ areActiveRoutes(['reschedule.payments']) }}">
-                                <i class="las la-folder-open aiz-side-nav-icon"></i>
-                                <span class="aiz-side-nav-text">{{ translate('Reschedule Payments') }}</span>
-                            </a>
-                        </li>
-                    @endif
-                    @if ($user->user_type == 'admin' || in_array(88, $permissions))
-                        <li class="aiz-side-nav-item">
-                            <a href="{{ route('wallet-amount.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['wallet-amount.index']) }}">
-                                <i class="las la-folder-open aiz-side-nav-icon"></i>
-                                <span class="aiz-side-nav-text">{{ translate('Wallet Amount') }}</span>
-                            </a>
-                        </li>
-                    @endif
+                @if ($user->user_type == 'admin' || in_array(69, $permissions))
+                    <li class="aiz-side-nav-item">
+                        <a href="{{ route('reschedule.payments') }}"
+                            class="aiz-side-nav-link {{ areActiveRoutes(['reschedule.payments']) }}">
+                            <i class="las la-folder-open aiz-side-nav-icon"></i>
+                            <span class="aiz-side-nav-text">{{ translate('Reschedule Payments') }}</span>
+                        </a>
+                    </li>
+                @endif
+                @if ($user->user_type == 'admin' || in_array(88, $permissions))
+                    <li class="aiz-side-nav-item">
+                        <a href="{{ route('wallet-amount.index') }}"
+                            class="aiz-side-nav-link {{ areActiveRoutes(['wallet-amount.index']) }}">
+                            <i class="las la-folder-open aiz-side-nav-icon"></i>
+                            <span class="aiz-side-nav-text">{{ translate('Wallet Amount') }}</span>
+                        </a>
+                    </li>
+                @endif
 
                 <li class="side-nav-title">{{ translate('Others') }}</li>
                 @if ($user->user_type == 'admin' || in_array(91, $permissions))
                     <!-- Uploads Files -->
                     <li class="aiz-side-nav-item">
-                        <a href="{{ route('message-to-customers.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['message-to-customers.index']) }}">
+                        <a href="{{ route('message-to-customers.index') }}"
+                            class="aiz-side-nav-link {{ areActiveRoutes(['message-to-customers.index']) }}">
                             <i class="las la-folder-open aiz-side-nav-icon"></i>
                             <span class="aiz-side-nav-text">{{ translate('Message To Customers') }}</span>
                         </a>
@@ -793,7 +852,8 @@
                 @if ($user->user_type == 'admin' || in_array(70, $permissions))
                     <!-- Uploads Files -->
                     <li class="aiz-side-nav-item">
-                        <a href="{{ route('uploaded-files.index') }}" class="aiz-side-nav-link {{ areActiveRoutes(['uploaded-files.create']) }}">
+                        <a href="{{ route('uploaded-files.index') }}"
+                            class="aiz-side-nav-link {{ areActiveRoutes(['uploaded-files.create']) }}">
                             <i class="las la-folder-open aiz-side-nav-icon"></i>
                             <span class="aiz-side-nav-text">{{ translate('Uploaded Files') }}</span>
                         </a>
@@ -812,7 +872,8 @@
                             @if ($user->user_type == 'admin' || in_array(71, $permissions))
                                 <li class="aiz-side-nav-item">
                                     <a href="{{ route('affiliate.index') }}" class="aiz-side-nav-link">
-                                        <span class="aiz-side-nav-text">{{ translate('Referral Configurations') }}</span>
+                                        <span
+                                            class="aiz-side-nav-text">{{ translate('Referral Configurations') }}</span>
                                     </a>
                                 </li>
                             @endif

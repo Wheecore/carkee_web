@@ -69,7 +69,7 @@ class ProductController extends Controller
         $data['vehicle_categories'] = VehicleCategory::select('id', 'name')->get();
         $data['feature_categories'] = FeaturedCategory::select('id', 'name')->get();
         $data['flash_deals'] = Deal::where('type', 'today')->where('status', 1)->select('id', 'title')->get();
-        $data['categories'] = Category::whereIn('id', [1, 4, 5])->select('id', 'name')->get();
+        $data['categories'] = Category::whereIn('name', ["Tyre", "Services", "Others","Car Wash","Parts"])->select('id', 'name')->get();
         $data['subcategories'] = DB::table('service_categories')->join('service_category_translations as sct', 'sct.service_category_id', '=', 'service_categories.id')->select('sct.service_category_id as id', 'sct.name')->where('service_categories.parent_id', null)->where('sct.lang', env('DEFAULT_LANGUAGE', 'en'))->get()->toArray();
 
         return view('backend.product.products.create', $data);
@@ -254,7 +254,7 @@ class ProductController extends Controller
         $data['lang'] = $request->lang;
         $data['tags'] = json_decode($product->tags);
         $data['languages'] = DB::table('languages')->select('id', 'code', 'name')->get();
-        $data['categories'] = Category::whereIn('id', [1, 4, 5])->select('id', 'name')->get();
+        $data['categories'] = Category::whereIn('name', ["Tyre", "Car Wash", "Parts"])->select('id', 'name')->get();
         $data['tyre_brands'] = BrandData::where('type', 'tyre_brands')->get();
         $data['service_brands'] = BrandData::where('type', 'service_brands')->get();
         $data['featured_categories'] = FeaturedCategory::select('id', 'name')->get();
