@@ -310,9 +310,9 @@ class CartController extends Controller
                 $current_qty += $request->quantity;
             }
 
-            if ($stock < $current_qty) {
-                return response()->json(['result' => false, 'message' => "This item is reached to maximum limit in your cart!"], 200);
-            }
+            // if ($stock < $current_qty) {
+            //     return response()->json(['result' => false, 'message' => "This item is reached to maximum limit in your cart!"], 200);
+            // }
             if ($product->min_qty > $current_qty) {
                 return response()->json(['result' => false, 'message' => "Minimum {$product->min_qty} item(s) should be ordered"], 200);
             }
