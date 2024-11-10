@@ -1091,7 +1091,7 @@ class CartController extends Controller
             });
         }
 
-        $featured_categories_arr = $featured_categories->map(function ($featured_category) {
+        $featured_categories_arr = $featured_categories->map(function ($featured_category)use ($type) {
             $featured_sub_categories = FeaturedSubCategory::where('featured_category_id', $featured_category->id)
             ->where('type', $type)
             ->select('id', 'name')->get();
