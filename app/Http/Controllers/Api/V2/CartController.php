@@ -75,8 +75,10 @@ class CartController extends Controller
                         'products.discount_start_date',
                         'products.discount_end_date',
                         'products.discount_type',
-                        'products.discount'
+                        'products.discount',
+                        'categories.name as category_name'
                     )
+                    ->join('categories', 'categories.id', '=', 'products.category_id')
                     ->where('products.id', $cart->product_id)
                     ->where('product_translations.lang', $locale)
                     ->first();
@@ -96,7 +98,7 @@ class CartController extends Controller
                     $product_brands = (array) (json_decode($product->brand_id, true) ?? []);
                     $product_models = (array) (json_decode($product->model_id, true) ?? []);
 
-                    $data['tyre_items'][] = [
+                    $data['items'][] = [
                         'cart_id' => $cart->id,
                         'product_name_with_choice' => $product->name,
                         'product_id' => $cart->product_id,
@@ -113,7 +115,8 @@ class CartController extends Controller
                         'ps_status' => $product->ps_status,
                         'available_stock' => $product->qty,
                         'brands' => $this->make_brand_model_string(DB::table('brands')->whereIn('id', $product_brands)->select('name')->get()),
-                        'models' => $this->make_brand_model_string(DB::table('car_models')->whereIn('id', $product_models)->select('name')->get())
+                        'models' => $this->make_brand_model_string(DB::table('car_models')->whereIn('id', $product_models)->select('name')->get()),
+                        'category_name' => $product->category_name,
                     ];
                 }
             } elseif (!is_null($cart->package_id)) {
