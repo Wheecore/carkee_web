@@ -1092,7 +1092,9 @@ class CartController extends Controller
         }
 
         $featured_categories_arr = $featured_categories->map(function ($featured_category) {
-            $featured_sub_categories = FeaturedSubCategory::where('featured_category_id', $featured_category->id)->select('id', 'name')->get();
+            $featured_sub_categories = FeaturedSubCategory::where('featured_category_id', $featured_category->id)
+            ->where('type', $type)
+            ->select('id', 'name')->get();
             $featured_sub_categories_arr = $featured_sub_categories->map(function ($featured_sub_category) {
                 return [
                     'id' => $featured_sub_category->id,
