@@ -1029,10 +1029,6 @@ class CartController extends Controller
         $brand_filter = $request->filter_by_brand;
         $front_rear_filter = $request->filter_by_front_rear;
         $product_filter = $request->filter_by_products;
-        $featured_categories = FeaturedCategory::select('id', 'name')->get();
-        $vehicle_categories = VehicleCategory::select('id', 'name')->get();
-        $size_categories = SizeCategory::select('id', 'name')->orderBy('name', 'desc')->get();
-        $brands = Brand::orderBy('name', 'asc')->select('id', 'name')->get();
 
         switch ($category_name) {
             case 'tyres':
@@ -1054,6 +1050,12 @@ class CartController extends Controller
                 $img = 'assets/img/carwash.png';
                 break;
         }
+
+        $featured_categories = FeaturedCategory::where("type",$type)->select('id', 'name')->get();
+        $vehicle_categories = VehicleCategory::select('id', 'name')->get();
+        $size_categories = SizeCategory::select('id', 'name')->orderBy('name', 'desc')->get();
+        $brands = Brand::orderBy('name', 'asc')->select('id', 'name')->get();
+
 
         $brand_category = DB::table('brand_datas')->where('type', $category_brands)->select('id', 'name')->get();
         $category_id = Category::where('name', $category)->select('id')->first();
@@ -1091,9 +1093,8 @@ class CartController extends Controller
             });
         }
 
-        $featured_categories_arr = $featured_categories->map(function ($featured_category)use ($type) {
+        $featured_categories_arr = $featured_categories->map(function ($featured_category) {
             $featured_sub_categories = FeaturedSubCategory::where('featured_category_id', $featured_category->id)
-            ->where('type', $type)
             ->select('id', 'name')->get();
             $featured_sub_categories_arr = $featured_sub_categories->map(function ($featured_sub_category) {
                 return [
