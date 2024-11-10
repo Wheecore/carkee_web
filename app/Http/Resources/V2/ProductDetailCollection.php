@@ -60,7 +60,9 @@ class ProductDetailCollection extends ResourceCollection
                     'season' => $data->season,
                     'brand_photo' => ($data->tyre_service_brand_id) ? api_asset(DB::table('brand_datas')->where('id', $data->tyre_service_brand_id)->first()->photo) : '',
                     'performance' => ['dry' => $data->dry, 'wet' => $data->wet, 'sport' => $data->sport, 'comfort' => $data->comfort, 'mileage' => $data->mileage],
-                    'reviews' => $reviews_arr
+                    'reviews' => $reviews_arr,
+                    // category_name from $data->category_name
+                    'category_name' => $data->category_name,
                     ];
             })
         ];

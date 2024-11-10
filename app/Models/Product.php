@@ -71,5 +71,9 @@ class Product extends Model
     {
         return $this->belongsTo(CarDetail::class, 'details_id');
     }
+    public function categories()
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
     
 }

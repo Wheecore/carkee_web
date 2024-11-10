@@ -35,7 +35,13 @@ class ProductController extends Controller
                 $b_histoy->save();
             }
         }
-        return new ProductDetailCollection(Product::where('id', $id)->get());
+
+        $product = Product::
+        join('categories', 'products.category_id', '=', 'categories.id')
+        ->where('products.id', $id)
+        ->select('products.*','categories.name as category_name')
+        ->get();
+        return new ProductDetailCollection($product);
     }
 
     public function all_reviews(Request $request)
