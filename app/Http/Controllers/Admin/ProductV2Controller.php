@@ -344,7 +344,7 @@ class ProductV2Controller extends Controller
 
 			// carwash
 			$added_carwash = explode(',', $request->added_carwash);
-			$products = Product::select('products.id as id', 'products.name as name', 'brand_id', 'model_id', 'year_id', 'variant_id')
+			$products = Product::select('products.id as id', 'products.name as name', 'products.brand_id as brand_id', 'model_id', 'year_id', 'variant_id')
 				->join('categories', 'products.category_id', '=', 'categories.id')
 				->when(request('carwash_sub_category_id'), function ($q) {
 					return $q->where('sub_category_id', request('carwash_sub_category_id'));
@@ -357,61 +357,61 @@ class ProductV2Controller extends Controller
 
 			foreach ($products as $product) {
 				if ($request->input('carwash_' . $product->id) || in_array($product->id, $added_carwash)) {
-					$brand_id = (array) (json_decode($product->car_brand_id) ?? []);
-					$model_id = (array) (json_decode($product->car_model_id) ?? []);
-					$year_id = (array) (json_decode($product->car_year_id) ?? []);
-					$variant_id = (array) (json_decode($product->car_variant_id) ?? []);
+					$brand_id = (array) (json_decode($product->brand_id) ?? []);
+					$model_id = (array) (json_decode($product->model_id) ?? []);
+					$year_id = (array) (json_decode($product->year_id) ?? []);
+					$variant_id = (array) (json_decode($product->variant_id) ?? []);
 					if ($request->input('carwash_' . $product->id)) {
-						$brand_id = (array) (json_decode($product->car_brand_id) ?? []);
+						$brand_id = (array) (json_decode($product->brand_id) ?? []);
 						if ($request->brand_id) {
 							$brand_id[] = $request_brand_id;
 							$brand_id = array_unique($brand_id);
 						}
-						$model_id = (array) (json_decode($product->car_model_id) ?? []);
+						$model_id = (array) (json_decode($product->model_id) ?? []);
 						if ($request->model_id) {
 							$model_id[] = $request_model_id;
 							$model_id = array_unique($model_id);
 						}
-						$year_id = (array) (json_decode($product->car_year_id) ?? []);
+						$year_id = (array) (json_decode($product->year_id) ?? []);
 						if ($request->year_id) {
 							$year_id[] = $request_year_id;
 							$year_id = array_unique($year_id);
 						}
-						$variant_id = (array) (json_decode($product->car_variant_id) ?? []);
+						$variant_id = (array) (json_decode($product->variant_id) ?? []);
 						if ($request->variant_id) {
 							$variant_id[] = $request_variant_id;
 							$variant_id = array_unique($variant_id);
 						}
 					} elseif (in_array($product->id, $added_carwash)) {
-						$brand_id = (array) (json_decode($product->car_brand_id) ?? []);
+						$brand_id = (array) (json_decode($product->brand_id) ?? []);
 						if ($request->brand_id) {
 							if (($key = array_search($request_brand_id, $brand_id)) !== false) {
 								unset($brand_id[$key]);
 							}
 						}
-						$model_id = (array) (json_decode($product->car_model_id) ?? []);
+						$model_id = (array) (json_decode($product->model_id) ?? []);
 						if ($request->model_id) {
 							if (($key = array_search($request_model_id, $model_id)) !== false) {
 								unset($model_id[$key]);
 							}
 						}
-						$year_id = (array) (json_decode($product->car_year_id) ?? []);
+						$year_id = (array) (json_decode($product->year_id) ?? []);
 						if ($request->year_id) {
 							if (($key = array_search($request_year_id, $year_id)) !== false) {
 								unset($year_id[$key]);
 							}
 						}
-						$variant_id = (array) (json_decode($product->car_variant_id) ?? []);
+						$variant_id = (array) (json_decode($product->variant_id) ?? []);
 						if ($request->variant_id) {
 							if (($key = array_search($request_variant_id, $variant_id)) !== false) {
 								unset($variant_id[$key]);
 							}
 						}
 					}
-					$product->car_brand_id = json_encode($brand_id);
-					$product->car_model_id = json_encode($model_id);
-					$product->car_year_id = json_encode($year_id);
-					$product->car_variant_id = json_encode($variant_id);
+					$product->brand_id = json_encode($brand_id);
+					$product->model_id = json_encode($model_id);
+					$product->year_id = json_encode($year_id);
+					$product->variant_id = json_encode($variant_id);
 					$product->save();
 				}
 			}
