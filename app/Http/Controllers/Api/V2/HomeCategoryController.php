@@ -40,13 +40,22 @@ class HomeCategoryController extends Controller
         'products.discount', 'products.rating', 'products.num_of_sale','products.category_id','products.quantity_1_price',
         'brand_datas.id as brand_id', 'brand_datas.photo')->where('products.category_id', 1)
         ->where('products.published', 1)->orderBy('products.num_of_sale', 'desc')->limit(8)->get());
+
+        $part_products = new HomeProductCollection(Product::leftJoin('uploads', 'uploads.id', '=', 'products.thumbnail_img')
+        ->leftJoin('brand_datas', 'brand_datas.id', '=', 'products.tyre_service_brand_id')
+        ->select(DB::raw("CONCAT('" . url('/') . "/public/', uploads.file_name) AS thumbnail_image"), 'products.id', 'products.name',
+        'products.unit_price', 'products.discount_start_date', 'products.discount_end_date', 'products.discount_type',
+        'products.discount', 'products.rating', 'products.num_of_sale','products.category_id','products.quantity_1_price',
+        'brand_datas.id as brand_id', 'brand_datas.photo')->where('products.category_id', 2)
+        ->where('products.published', 1)->orderBy('products.num_of_sale', 'desc')->limit(8)->get());
        
         $service_products = new HomeProductCollection(Product::leftJoin('uploads', 'uploads.id', '=', 'products.thumbnail_img')
         ->leftJoin('brand_datas', 'brand_datas.id', '=', 'products.tyre_service_brand_id')
+        ->join('categories', 'categories.id', '=', 'products.category_id')
         ->select(DB::raw("CONCAT('" . url('/') . "/public/', uploads.file_name) AS thumbnail_image"), 'products.id', 'products.name',
         'products.unit_price', 'products.discount_start_date', 'products.discount_end_date', 'products.discount_type', 'products.discount',
         'products.rating', 'products.num_of_sale','products.category_id','brand_datas.id as brand_id','brand_datas.photo')
-        ->where('products.category_id', 4)->where('products.published', 1)->orderBy('products.num_of_sale', 'desc')->limit(8)->get());
+        ->where('categories.name', "Parts")->where('products.published', 1)->orderBy('products.num_of_sale', 'desc')->limit(8)->get());
         
         $batteries_products = DB::table('batteries as b')
         ->leftJoin('brand_datas', 'brand_datas.id', '=', 'b.battery_brand_id')
@@ -129,6 +138,7 @@ class HomeCategoryController extends Controller
             'promotion_products' => $promotion_products,
             'best_selling_products' => $best_selling_products,
             'tyre_products' => $tyre_products,
+            'part_products' => $part_products,
             'service_products' => $service_products,
             'batteries_products' => $batteries_products,
             'total_notifications' => DB::table('notifications')->where('user_id', $user_id)->where('is_viewed', 0)->count(),
