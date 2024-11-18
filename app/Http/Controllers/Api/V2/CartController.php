@@ -678,8 +678,11 @@ class CartController extends Controller
 
     public function checkTimings(Request $request)
     {
+        date_default_timezone_set('Asia/Kuala_Lumpur');
         $current_date = date('Y-m-d', strtotime('+3 days'));
         $available_dates = WorkshopAvailability::select('shop_id', 'date')->where('shop_id', $request->shop_id)->where('from_time', '!=', '')->where('to_time', '!=', '')->whereDate('date', '>=', $current_date)->get();
+
+        // get sql query
         if (count($available_dates) > 0) {
             $dates_arr = $available_dates->map(function ($data) {
                 $message = '';
