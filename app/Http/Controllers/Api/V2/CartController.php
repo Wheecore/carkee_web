@@ -681,6 +681,11 @@ class CartController extends Controller
         $current_date = date('Y-m-d', strtotime('+3 days'));
         $available_dates = WorkshopAvailability::select('shop_id', 'date')->where('shop_id', $request->shop_id)->where('from_time', '!=', '')->where('to_time', '!=', '')->whereDate('date', '>=', $current_date)->get();
 
+        return response()->json([
+            'result' => true,
+            'dates' => $available_dates,
+        ], 200);
+
         if (count($available_dates) > 0) {
             $dates_arr = $available_dates->map(function ($data) {
                 $message = '';
