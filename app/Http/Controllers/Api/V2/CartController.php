@@ -684,6 +684,7 @@ class CartController extends Controller
         return response()->json([
             'result' => true,
             'dates' => $available_dates,
+            'current_date' => $current_date,
         ], 200);
 
         if (count($available_dates) > 0) {
