@@ -678,9 +678,7 @@ class CartController extends Controller
 
     public function checkTimings(Request $request)
     {
-        $current_date = date('Y-m-d', strtotime('+3 days'));
-        // $available_dates = WorkshopAvailability::select('shop_id', 'date')->where('shop_id', $request->shop_id)->where('from_time', '!=', '')->where('to_time', '!=', '')->whereDate('date', '>=', $current_date)->get();
-        
+        $current_date = date('Y-m-d', strtotime('+3 days'));        
         $available_dates = WorkshopAvailability::select('shop_id', 'date')
             ->where('shop_id', $request->shop_id)
             ->whereNotNull('from_time')
@@ -688,13 +686,6 @@ class CartController extends Controller
             ->whereDate('date', '>=', $current_date)
             ->get();
 
-        $get_all_date = WorkshopAvailability::where('shop_id', $request->shop_id)->whereDate('date', '>=', $current_date)->get();
-        return response()->json([
-            'result' => true,
-            'dates' => $available_dates,
-            'current_date' => $current_date,
-            'all_dates' => $get_all_date,
-        ], 200);
 
         if (count($available_dates) > 0) {
             $dates_arr = $available_dates->map(function ($data) {
