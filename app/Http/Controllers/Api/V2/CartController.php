@@ -68,6 +68,7 @@ class CartController extends Controller
                         'products.brand_id',
                         'products.model_id',
                         'products.qty',
+                        'products.unit_price',
                         'products.quantity_1_price',
                         'products.greater_1_price',
                         'products.greater_3_price',
