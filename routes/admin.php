@@ -429,11 +429,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin', 'unbanned']], funct
 	Route::post('/get-all-batteries', 'Admin\ProductV2Controller@get_all_batteries');
 	Route::post('/get-all-services', 'Admin\ProductV2Controller@get_all_services');
 	Route::post('/get-all-mileages', 'Admin\ProductV2Controller@get_all_mileages');
-	
-    Route::get('/add-parts-carwash', 'Admin\ProductV2Controller@add_parts_carwash')->name('add-parts-carwash');
-    Route::post('/get-all-parts', 'Admin\ProductV2Controller@get_all_parts');
-	Route::post('/add-parts-carwash-store', 'Admin\ProductV2Controller@add_parts_carwash_store')->name('add-parts-carwash-store.store');
 
+	Route::get('/add-parts-carwash', 'Admin\ProductV2Controller@add_parts_carwash')->name('add-parts-carwash');
+	Route::post('/get-all-parts', 'Admin\ProductV2Controller@get_all_parts');
+	Route::post('/add-parts-carwash-store', 'Admin\ProductV2Controller@add_parts_carwash_store')->name('add-parts-carwash-store.store');
 
 });
 
