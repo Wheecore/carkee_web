@@ -155,13 +155,8 @@
                                                     </td>
                                                     <!-- <td width="10%">{{ parseFloat(row.amount) }}</td> -->
                                                     <td width="10%">
-                                                        <template v-if="user_id === 1">
-                                                            <input type="number" class="form-control"
-                                                                v-model="row.amount" @input="calculateTotal" />
-                                                        </template>
-                                                        <template v-else>
-                                                            {{ parseFloat(row.amount) }}
-                                                        </template>
+                                                        <input type="number" class="form-control" v-model="row.amount"
+                                                            @input="calculateTotal" />
                                                     </td>
                                                     <td width="10%"><input type="number" step="0.01"
                                                             class="form-control" @input="calculateTotal"
