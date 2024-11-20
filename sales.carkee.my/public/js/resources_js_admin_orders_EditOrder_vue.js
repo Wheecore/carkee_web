@@ -29,6 +29,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     return {
       id: '',
       user_id: '',
+      userRole: '',
       order_items: {},
       customers: [],
       products: [],
@@ -60,6 +61,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 id: _this.id
               }).then(function (response) {
                 _this.user_id = response.data.user_id;
+                _this.userRole = parseInt(localStorage.getItem('role'));
                 var order = response.data.order;
                 _this.customer_id = order.customer_id;
                 _this.totalAmount = order.total;
@@ -687,12 +689,12 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       }
     }, _hoisted_77, 8 /* PROPS */, _hoisted_75), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelSelect, row.uom]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_78, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
       type: "number",
-      step: "0.01",
       "class": "form-control",
+      step: "0.01",
       "onUpdate:modelValue": function onUpdateModelValue($event) {
         return row.amount = $event;
       },
-      readonly: $data.user_id != 1
+      readonly: $data.userRole !== 1
     }, null, 8 /* PROPS */, _hoisted_79), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, row.amount]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_80, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
       type: "number",
       step: "0.01",

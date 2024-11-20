@@ -139,7 +139,7 @@
                                                         <option value="PCS">PCS</option>
                                                     </select>
                                                 </td>
-                                                <td width="10%"><input type="number" step="0.01" class="form-control" v-model="row.amount" :readonly="user_id != 1" /></td>
+                                                <td width="10%"><input type="number" class="form-control" step="0.01" v-model="row.amount" :readonly="userRole !== 1" /></td>
                                                 <td width="10%"><input type="number" step="0.01" class="form-control" @input="calculateTotal" :id="'disc-' + row.id" v-model="row.disc" readonly /></td>
                                                 <td width="10%" :id="'sub-total-' + row.id">{{ (parseInt(row.qty) * parseFloat(row.amount)) - (parseFloat(row.disc)/100 * (parseInt(row.qty) * parseFloat(row.amount))) }}</td>
                                             </tr>
@@ -188,6 +188,7 @@ export default {
         return {
             id: '',
             user_id: '',
+            userRole: '',
             order_items: {},
             customers: [],
             products: [],
@@ -214,6 +215,7 @@ export default {
             })
             .then(response => {
                 this.user_id = response.data.user_id;
+                this.userRole = parseInt(localStorage.getItem('role'));
                 const order = response.data.order;
                 this.customer_id = order.customer_id;
                 this.totalAmount = order.total;
