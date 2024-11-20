@@ -139,7 +139,7 @@
                                                         <option value="PCS">PCS</option>
                                                     </select>
                                                 </td>
-                                                <td width="10%"><input type="number"class="form-control"step="0.01"v-model="row.amount":readonly="userRole !== 1" /></td>
+                                                <td width="10%"><input type="number" class="form-control" step="0.01" v-model="row.amount" :readonly="userRole !== 1" /></td>
                                                 <td width="10%"><input type="number" step="0.01" class="form-control" @input="calculateTotal" :id="'disc-' + row.id" v-model="row.disc" readonly /></td>
                                                 <td width="10%" :id="'sub-total-' + row.id">{{ (parseInt(row.qty) * parseFloat(row.amount)) - (parseFloat(row.disc)/100 * (parseInt(row.qty) * parseFloat(row.amount))) }}</td>
                                             </tr>
