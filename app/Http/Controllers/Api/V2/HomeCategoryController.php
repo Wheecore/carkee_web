@@ -69,6 +69,7 @@ class HomeCategoryController extends Controller
         ->leftJoin('uploads', 'uploads.id', '=', 'categories.icon')
         ->select(DB::raw("CONCAT('" . url('/') . "/public/', uploads.file_name) AS icon"), 'categories.name as cat_name')
         ->where('categories.active', 1)
+        ->orderBy('categories.sorting', 'asc')
         ->limit(4)
         ->get()
         ->toArray();
