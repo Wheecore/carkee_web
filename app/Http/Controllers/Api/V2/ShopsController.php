@@ -96,7 +96,7 @@ class ShopsController extends Controller
             'name' => $shop->name,
             'address' => $shop->address,
             'rating' => $shop->rating,
-            'attachment' => $shop->attachment,
+            'attachment' => $shop->attachment == "" ? static_asset('assets/img/workshop.jpg') : $shop->attachment,
             'description' => $shop->description,
             'distance' => round(distance($shop->latitude, $shop->longitude, $request->latitude, $request->longitude, 'K'), 2),
         );
