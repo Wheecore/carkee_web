@@ -89,7 +89,9 @@ class HomeCategoryController extends Controller
         $shops_data = $shops->map(function($shop){
              return[
                 'id' => $shop->id,
-                'logo' => api_asset($shop->logo),
+                // 'logo' => api_asset($shop->logo),
+                // if $shop->logo is null then return default logo
+                'logo' => $shop->logo ? api_asset($shop->logo) : static_asset('assets/img/workshop.jpg'),
                 'name' => $shop->name,
                 'rating' => $shop->rating
              ];
