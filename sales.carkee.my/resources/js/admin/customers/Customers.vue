@@ -10,36 +10,38 @@
                             <input type="text" class="form-control" placeholder="Search" v-model="search" @input="fetchCustomers(pagination.current_page)" />
                         </div>
                     </h4>
-                    <table class="table" id="myDataTable">
-                        <thead>
-                            <tr>
-                                <th>Staff</th>
-                                <th>Custom Code</th>
-                                <th>Name</th>
-                                <th>Phone</th>
-                                <th>Fax</th>
-                                <th>Address</th>
-                                <th>Created</th>
-                                <th>Options</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="user in users" :key="user.id">
-                                <td>{{ user.staff }}</td>
-                                <td>{{ user.code }}</td>
-                                <td>{{ user.name }}</td>
-                                <td>{{ user.phone }}</td>
-                                <td>{{ user.fax }}</td>
-                                <td>{{ user.address }}</td>
-                                <td>{{ user.created_at }}</td>
-                                <td>
-                                    <router-link :to="'/admin/customers/' + encryptId(user.id) + ''" class="btn btn-sm btn-primary mr-1 mb-1">View</router-link>
-                                    <router-link :to="'/admin/customers/' + encryptId(user.id) + '/edit'" class="btn btn-sm btn-primary mr-1 mb-1">Edit</router-link>
-                                    <button @click="deleteCustomer" :data-id="user.id" class="btn btn-sm btn-danger btn-delete mr-1 mb-1" data-bs-toggle="modal" data-bs-target="#delete">Delete</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+					<table class="table" id="myDataTable">
+						<thead>
+						<tr>
+							<th>Staff</th>
+							<th>Customer Code</th>
+							<th>Name</th>
+							<th>Company Number</th>
+							<th>Company Phone</th>
+							<th>PIC Name</th>
+							<th>PIC Phone</th>
+							<th>Address</th>
+							<th>Options</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr v-for="user in users" :key="user.id">
+							<td>{{ user.staff }}</td>
+							<td>{{ user.code }}</td>
+							<td>{{ user.name }}</td>
+							<td>{{ user.company_number ?? '-' }}</td>
+							<td>{{ user.company_phone ??'-' }}</td>
+							<td>{{ user.pic_name ??'-' }}</td>
+							<td>{{ user.pic_phone ??'-' }}</td>
+							<td>{{ user.address }}</td>
+							<td>
+								<router-link :to="'/customers/' + encryptId(user.id) + ''" class="btn btn-sm btn-primary mr-1">View</router-link>
+								<router-link :to="'/customers/' + encryptId(user.id) + '/edit'" class="btn btn-sm btn-primary mr-1">Edit</router-link>
+								<button @click="deleteCustomer" :data-id="user.id" class="btn btn-sm btn-danger btn-delete mr-1" data-bs-toggle="modal" data-bs-target="#delete">Delete</button>
+							</td>
+						</tr>
+						</tbody>
+					</table>
                     <div class="mb-3">Showing {{ pagination.from }} to {{ pagination.to }} of {{ pagination.total }} records - Page {{ pagination.current_page }} of {{ pagination.last_page }}</div>
                     <nav aria-label="Page navigation">
                         <ul class="pagination">

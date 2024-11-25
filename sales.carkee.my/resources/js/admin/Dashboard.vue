@@ -76,7 +76,11 @@ export default {
         async dashboard() {
             await axios.post('/api/admin/dashboard', {
                 id: this.id
-            })
+            }, {
+				headers: {
+					Authorization: `Bearer ${localStorage.getItem("token")}`,
+				},
+			})
             .then(response => {
                 this.stats = response.data;
             })
@@ -96,7 +100,7 @@ export default {
         },
     },
     mounted() {
-        document.title = 'Dashboard';
+		document.title = 'Dashboard';
         this.dashboard();
     },
 }

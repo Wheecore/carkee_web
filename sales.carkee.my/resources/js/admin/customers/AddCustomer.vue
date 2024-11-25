@@ -9,7 +9,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group mb-4">
-                                    <label for="">Name</label>
+                                    <label for="">Company Name</label>
                                     <span class="text-danger"> *</span>
                                     <input type="text" :class="['form-control', {'is-invalid': name_error}]" name="name" v-model="name">
                                     <span class="invalid-feedback" v-if="name_error" role="alert">
@@ -18,22 +18,57 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group mb-4">
-                                    <label for="">Phone</label>
-                                    <span class="text-danger"> *</span>
-                                    <input type="text" :class="['form-control', {'is-invalid': phone_error}]" name="phone" v-model="phone">
-                                    <span class="invalid-feedback" v-if="phone_error" role="alert">
-                                        <strong>{{ phone_error }}</strong>
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group mb-4">
+									<label for="">Company Number</label>
+									<input type="text" :class="['form-control', {'is-invalid': name_error}]" name="company-number" v-model="company_number">
+									<span class="invalid-feedback" v-if="name_error" role="alert">
+                                        <strong>{{ name_error }}</strong>
                                     </span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group mb-4">
+									<label for="">Company Phone</label>
+									<span class="text-danger"> *</span>
+									<input type="text" :class="['form-control', {'is-invalid': name_error}]" name="company-phone" v-model="company_phone">
+									<span class="invalid-feedback" v-if="name_error" role="alert">
+                                        <strong>{{ name_error }}</strong>
+                                    </span>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group mb-4">
+									<label for="">PIC Name</label>
+									<span class="text-danger"> *</span>
+									<input type="text" :class="['form-control', {'is-invalid': name_error}]" name="pic-name" v-model="pic_name">
+									<span class="invalid-feedback" v-if="name_error" role="alert">
+                                        <strong>{{ name_error }}</strong>
+                                    </span>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-12">
+								<div class="form-group mb-4">
+									<label for="">PIC Phone</label>
+									<span class="text-danger"> *</span>
+									<input type="text" :class="['form-control', {'is-invalid': name_error}]" name="pic-phone" v-model="pic_phone">
+									<span class="invalid-feedback" v-if="name_error" role="alert">
+                                        <strong>{{ name_error }}</strong>
+                                    </span>
+								</div>
+							</div>
+						</div>
+                        <div class="row">
+                            <div class="col-md-12">
                                 <div class="form-group mb-4">
-                                    <label for="">Fax</label>
+                                    <label for="">Email</label>
                                     <span class="text-danger"> *</span>
-                                    <input type="text" :class="['form-control', {'is-invalid': fax_error}]" name="fax" v-model="fax">
+                                    <input type="text" :class="['form-control', {'is-invalid': fax_error}]" name="email" v-model="email">
                                     <span class="invalid-feedback" v-if="fax_error" role="alert">
                                         <strong>{{ fax_error }}</strong>
                                     </span>
@@ -76,28 +111,28 @@ export default {
     data() {
         return {
             name: '',
-            phone: '',
-            fax: '',
+			company_number: '',
+			company_phone: '',
+			pic_name: '',
+			pic_phone: '',
+			email: '',
             address: '',
             name_error: '',
-            phone_error: '',
-            fax_error: '',
             address_error: '',
         }
     },
     methods: {
         async addNewCustomer(e) {
-            this.name_error = '';
-            this.phone_error = '';
-            this.fax_error = '';
-            this.address_error = '';
             e.target.disabled = true;
             document.querySelector('.spinner-border').classList.remove('d-none');
             await axios.post('/api/customers/store', {
                 id: localStorage.getItem('id'),
                 name: this.name,
-                phone: this.phone,
-                fax: this.fax,
+				company_phone: this.company_phone,
+				company_number: this.company_number,
+				pic_name: this.pic_name,
+				pic_phone: this.pic_phone,
+                email: this.email,
                 address: this.address,
             })
             .then(response => {

@@ -26,36 +26,44 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group mb-4">
-                                <label for="">Phone</label>
-                                <p>{{ user.phone }}</p>
+                                <label for="">Company Number</label>
+                                <p>{{ user.company_number ?? '-' }}</p>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group mb-4">
-                                <label for="">Fax</label>
-                                <p>{{ user.fax }}</p>
+								<label for="">Company Phone</label>
+								<p>{{ user.company_phone ?? '-' }}</p>
                             </div>
                         </div>
                     </div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group mb-4">
+								<label for="">PIC Name</label>
+								<p>{{ user.pic_name ?? '-' }}</p>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group mb-4">
+								<label for="">PIC Phone</label>
+								<p>{{ user.pic_phone ?? '-' }}</p>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group mb-4">
+								<label for="">Email</label>
+								<p>{{ user.email ?? '-' }}</p>
+							</div>
+						</div>
+					</div>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group mb-4">
                                 <label for="">Address</label>
                                 <p>{{ user.address }}</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group mb-4">
-                                <label for="">Created</label>
-                                <p>{{ user.created_at }}</p>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group mb-4">
-                                <label for="">Last Updated</label>
-                                <p>{{ user.updated_at }}</p>
                             </div>
                         </div>
                     </div>

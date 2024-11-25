@@ -21,7 +21,7 @@
                             </div>
                             <div class="form-group">
                                 <h4>Carkee Automative Sdn Bhd.</h4>
-                                <p class="mb-1">32, Jalan SS23/11 Taman SEA. 47400 Petaling Jaya. Selangor 0123440911</p>
+                                <p class="mb-1">9, Jalan Linggis 15/24, Seksyen 15, 40200 Shah Alam, Selangor</p>
                                 <p>Telephone: 0123440911 Email: enquiry@carkee.my</p>
                             </div>
                         </div>
@@ -51,10 +51,9 @@
                                         <tr>
                                             <td class="border-2px">
                                                 <p class="mb-1"><strong>Customer Code</strong>: {{ order.customer_code }}</p>
-                                                <p class="mb-1"><strong>CARKEE AUTOMOTIVE SDN. BHD</strong></p>
-                                                <p class="mb-1">{{ order.address }}</p>
-                                                <p class="mb-1"><strong>Contact Person</strong>: {{ order.name }}</p>
-                                                <p><strong>Tel</strong>: {{ order.phone }} <strong>Fax</strong>: {{ order.fax }}</p>
+                                                <p class="mb-1"><strong>{{order.name}}</strong></p>
+                                                <p class="mb-1"><strong>Contact Person</strong>: {{ order.pic_name }} ({{order.pic_name && order.pic_phone ? order.pic_phone : '-'}})</p>
+                                                <p><strong>Tel</strong>: {{ order.company_phone }}</p>
                                             </td>
                                             <td class="border-2px">
                                                 <p>{{ order.address }}</p>
@@ -75,8 +74,6 @@
                                                 <th class="border-2px">SALES PERSON</th>
                                                 <th class="border-2px">PAYMENT TERMS</th>
                                                 <th class="border-2px">PAYMENT DUE DATE</th>
-                                                <th class="border-2px">CUST. PO NO.</th>
-                                                <th class="border-2px">D/O NO</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -84,8 +81,6 @@
                                                 <td class="border-2px">{{ sales_person }}</td>
                                                 <td class="border-2px">{{ order.payment_term }}</td>
                                                 <td class="border-2px">{{ order.payment_due_date }}</td>
-                                                <td class="border-2px">{{ order.customer_po_no }}</td>
-                                                <td class="border-2px">{{ order.do_no }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -160,9 +155,8 @@
                         <div class="row p-2">
                             <div class="col-md-12">
                                 <div class="form-group float-left">
-                                    <p class="mb-1">Beneficiary Bank: MAYBANK - K</p>
-                                    <p class="mb-1">Address: G01, West Tower, Ground Floor, Wisma Consplant, Jalan SS16/4, 47500 Subang Jaya, Selangor</p>
-                                    <p class="mb-1">Beneficiary Account No: 512307606485</p>
+									<p class="mb-1">Beneficiary Bank: MAYBANK</p>
+									<p class="mb-1">Beneficiary Account No: 562683215043</p>
                                 </div>
                                 <div class="form-group float-right">
                                     <h5>Carkee Automative Sdn Bhd.</h5>

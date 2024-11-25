@@ -7,7 +7,7 @@
                     <h4 class="mb-4">Add New Order</h4>
                     <form @submit.prevent="addOrderDetails">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="form-group mb-4">
                                     <label for="">Select Customer</label>
                                     <span class="text-danger"> *</span>
@@ -22,29 +22,45 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            </div>
+						<div class="row">
+                            <div class="col-md-4">
                                 <div class="form-group mb-4">
-                                    <label for="">Name</label>
+                                    <label for="">Company Name</label>
                                     <span class="text-danger"> *</span>
                                     <input type="text" class="form-control" v-model="customer.name" disabled>
                                 </div>
                             </div>
+							<div class="col-md-4">
+								<div class="form-group mb-4">
+									<label for="">Company Number</label>
+									<span class="text-danger"> *</span>
+									<input type="text" class="form-control" v-model="customer.company_number" disabled>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group mb-4">
+									<label for="">Company Phone</label>
+									<span class="text-danger"> *</span>
+									<input type="text" class="form-control" v-model="customer.company_phone" disabled>
+								</div>
+							</div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group mb-4">
-                                    <label for="">Phone</label>
+                                    <label for="">PIC Name</label>
                                     <span class="text-danger"> *</span>
-                                    <input type="text" class="form-control" v-model="customer.phone" disabled>
+                                    <input type="text" class="form-control" v-model="customer.pic_name" disabled>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-4">
-                                    <label for="">Fax</label>
-                                    <span class="text-danger"> *</span>
-                                    <input type="text" class="form-control" v-model="customer.fax" disabled>
-                                </div>
-                            </div>
+							<div class="col-md-6">
+								<div class="form-group mb-4">
+									<label for="">PIC Phone</label>
+									<span class="text-danger"> *</span>
+									<input type="text" class="form-control" v-model="customer.pic_phone" disabled>
+								</div>
+							</div>
                         </div>
                         <div class="row">
                             <div class="col-md-12">
@@ -82,26 +98,12 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group mb-4">
-                                    <label for="">Customer PO NO.</label>
-                                    <input type="text" class="form-control" name="customer_po_no" v-model="customer_po_no">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group mb-4">
-                                    <label for="">D/O NO.</label>
-                                    <input type="text" class="form-control" name="do_no" v-model="do_no">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-12">
                                 <div class="form-group mb-4">
                                     <label for="">Products</label>
                                     <span class="text-danger"> *</span>
                                     <select data-live-search="true" :class="['form-control products-select', {'is-invalid': products_error}]" v-model="selected_products" ref="select" multiple>
-                                        <option v-for="option in products" :key="option.id" :value="option.id" :data-amount="option.amount" :data-stock="option.stock" :data-disc="option.disc">
+                                        <option v-for="option in products" :key="option.id" :value="option.id" :data-amount="option.amount" :data-stock="option.stock" :data-disc="option.disc" :data-name="option.name">
                                             {{ option.name }}
                                         </option>
                                     </select>
@@ -121,12 +123,13 @@
                                                 <th width="5%">S/N</th>
                                                 <th width="5%">CODE</th>
                                                 <th width="30%">DESCRIPTION</th>
-                                                <th width="10%">QTY</th>
-                                                <th width="10%">FOC</th>
+                                                <th width="5%">QTY</th>
+                                                <th width="5%">FOC</th>
                                                 <th width="10%">UOM</th>
                                                 <th width="10%">UNIT PRICE</th>
                                                 <th width="10%">DISC %</th>
                                                 <th width="10%">AMOUNT</th>
+                                                <th width="10%">ACTION</th>
                                             </thead>
                                             <tbody>
                                                 <tr v-for="(row, index) in rows" :key="index" :id="row.id">
@@ -143,6 +146,9 @@
                                                     <td width="10%">{{ parseFloat(row.amount) }}</td>
                                                     <td width="10%"><input type="number" step="0.01" class="form-control" @input="calculateTotal" :id="'disc-' + row.id" v-model="row.disc" readonly /></td>
                                                     <td width="10%" :id="'sub-total-' + row.id">{{ (parseInt(row.qty) * parseFloat(row.amount)) - (parseFloat(row.disc)/100 * (parseInt(row.qty) * parseFloat(row.amount))) }}</td>
+                                                    <td width="10%">
+														<button type="button" class="btn btn-outline-danger" @click="deleteProductRow(row)">Delete</button>
+													</td>
                                                 </tr>
                                             </tbody>
                                             <tfoot>
@@ -196,8 +202,6 @@ export default {
             customer_id: '',
             payment_term: '',
             payment_due_date: '',
-            customer_po_no: '',
-            do_no: '',
             selected_products: [],
             customer_id_error: '',
             payment_term_error: '',
@@ -221,7 +225,7 @@ export default {
         async fetchProducts() {
             await axios.post('/api/get-products', {})
             .then(response => {
-                this.products = response.data;
+                this.products = response.data
                 this.$nextTick(() => {
                     $('.products-select').selectpicker("refresh");
                 });
@@ -282,7 +286,7 @@ export default {
                     const selected_option = this.$refs.select.querySelector(`option[value="${option}"]`).dataset;
                     this.rows.push({
                         'id': option,
-                        'name': selected_option.textContent,
+                        'name': selected_option.name,
                         'amount': selected_option.amount,
                         'stock': selected_option.stock,
                         'qty': 1,
@@ -294,6 +298,10 @@ export default {
             });
             this.calculateTotal();
         },
+		deleteProductRow(row) {
+			this.rows.splice(this.rows.indexOf(row), 1)
+			this.calculateTotal()
+		},
         updateQuantity(e) {
             const key = parseInt(e.target.dataset.key);
             const option = this.products.find(obj => obj.id === key);
@@ -327,8 +335,6 @@ export default {
                 customer_id: this.customer_id,
                 payment_term: this.payment_term,
                 payment_due_date: this.payment_due_date,
-                customer_po_no: this.customer_po_no,
-                do_no: this.do_no,
                 products: this.rows,
             })
             .then(response => {

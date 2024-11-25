@@ -6,26 +6,15 @@
     <title></title>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <style>
-        .qr-code {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-        }
-    </style>
 </head>
 
 <body style="background-color: #fff; font-family: system-ui;">
-    <div class="qr-code">
-      <img src="{{ $qrCode }}" alt="QR Code">
-    </div>
     <table align="center" cellpadding="0" cellspacing="0" style="color: #000; width: 100%;">
         <tbody>
             <tr>
                 <td>
                     <div>
-                        <img src="{{ public_path('images/carkee-logo.png') }}"
-                            style="width: 250px; margin-bottom: 5px;">
+                        <img src="{{ public_path('images/carkee-logo.png') }}" style="width: 250px; margin-bottom: 5px;">
                         <h4 style="font-size: 1.3125rem; font-weight: 700; margin-top: 0; margin-bottom: 5px;">
                             Carkee Automative Sdn Bhd.
                         </h4>
@@ -63,11 +52,9 @@
         <tbody>
             <tr>
                 <td width="50%" style="border: 2px solid #333; padding: 5px;">
-                    <p style="margin: unset; margin-block-start: unset;"><strong>Customer Code</strong>:
-                        {{ $order->customer_code }}</p>
-                    <p style="margin: unset;"><strong>{{ $order->name }}</strong></p>
-                    <p class="mb-1"><strong>Contact Person</strong>: {{ $order->pic_name ?: '-' }}
-                        ({{ $order->pic_name && $order->pic_phone ? $order->pic_phone : '-' }})</p>
+                    <p style="margin: unset; margin-block-start: unset;"><strong>Customer Code</strong>: {{ $order->customer_code }}</p>
+                    <p style="margin: unset;"><strong>{{$order->name}}</strong></p>
+                    <p class="mb-1"><strong>Contact Person</strong>: {{ $order->pic_name ?: '-' }} ({{$order->pic_name && $order->pic_phone ? $order->pic_phone : '-'}})</p>
                     <p><strong>Tel</strong>: {{ $order->company_phone }}</p>
                 </td>
                 <td width="50%" style="border: 2px solid #333; padding: 5px;">
@@ -120,9 +107,7 @@
                     @if ($type == 'invoice')
                         <td style="border: 1px solid #333; padding: 5px;">{{ $item->amount }}</td>
                         <td style="border: 1px solid #333; padding: 5px;">{{ $item->disc }}</td>
-                        <td style="border: 1px solid #333; padding: 5px;">
-                            {{ $item->qty * $item->amount - ($item->disc / 100) * ($item->qty * $item->amount) }}
-                        </td>
+                        <td style="border: 1px solid #333; padding: 5px;">{{ (($item->qty) * ($item->amount)) - (($item->disc)/100 * (($item->qty) * ($item->amount))) }}</td>
                     @endif
                 </tr>
             @endforeach
@@ -141,21 +126,15 @@
                         <table align="center" cellpadding="0" cellspacing="0" style="color: #000; padding-top: 20px;">
                             <tbody>
                                 <tr>
-                                    <th
-                                        style="text-align: right; border: 1px solid #333; padding: 5px; font-size: 15px;">
-                                        SUBTOTAL (MYR)</th>
+                                    <th style="text-align: right; border: 1px solid #333; padding: 5px; font-size: 15px;">SUBTOTAL (MYR)</th>
                                     <td style="border: 1px solid #333; padding: 5px;">{{ $order->total }}</td>
                                 </tr>
                                 <tr>
-                                    <th
-                                        style="text-align: right; border: 1px solid #333; padding: 5px; font-size: 15px;">
-                                        TAX (MYR)</th>
+                                    <th style="text-align: right; border: 1px solid #333; padding: 5px; font-size: 15px;">TAX (MYR)</th>
                                     <td style="border: 1px solid #333; padding: 5px;">0.00</td>
                                 </tr>
                                 <tr>
-                                    <th
-                                        style="text-align: right; border: 1px solid #333; padding: 5px; font-size: 15px;">
-                                        TOTAL (MYR)</th>
+                                    <th style="text-align: right; border: 1px solid #333; padding: 5px; font-size: 15px;">TOTAL (MYR)</th>
                                     <td style="border: 1px solid #333; padding: 5px;">{{ $order->total }}</td>
                                 </tr>
                             </tbody>

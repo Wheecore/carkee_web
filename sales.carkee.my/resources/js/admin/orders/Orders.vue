@@ -15,7 +15,9 @@
                             <tr>
                                 <th>Code</th>
                                 <th>Name</th>
-                                <th>Phone</th>
+                                <th>Company Phone</th>
+                                <th>PIC Name</th>
+                                <th>PIC Phone</th>
                                 <th>Payment Terms</th>
                                 <th>Due Date</th>
                                 <th>Amount</th>
@@ -28,14 +30,17 @@
                             <tr v-for="order in orders" :key="order.id">
                                 <td>{{ order.code }}</td>
                                 <td>{{ order.name }}</td>
-                                <td>{{ order.phone }}</td>
+                                <td>{{ order.company_phone ?? '-' }}</td>
+                                <td>{{ order.pic_name ?? '-' }}</td>
+                                <td>{{ order.pic_phone ?? '-' }}</td>
                                 <td>{{ order.payment_term }}</td>
                                 <td>{{ order.payment_due_date }}</td>
-                                <td>RM {{ order.total }}</td>
+                                <td>RM {{ order.total.toFixed(2) }}</td>
                                 <td>{{ order.created_at }}</td>
                                 <td>
                                     <span class="badge badge-warning" v-if="order.status == 0">Pending</span>
-                                    <span class="badge badge-success" v-else>Completed</span>
+                                    <span class="badge badge-primary" v-if="order.status == 1">Out for Delivery</span>
+                                    <span class="badge badge-success" v-if="order.status == 2">Completed</span>
                                 </td>
                                 <td>
                                     <router-link :to="'/admin/orders/' + encryptId(order.id) + ''" class="btn btn-sm btn-primary mr-1">View</router-link>
@@ -155,3 +160,10 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+.badge-primary {
+	color: #fff;
+	background-color: #007bff;
+}
+</style>

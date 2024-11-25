@@ -17,12 +17,13 @@
                     <table class="table" id="myDataTable">
                         <thead>
                             <tr>
-                                <th>Custom Code</th>
+                                <th>Customer Code</th>
                                 <th>Name</th>
-                                <th>Phone</th>
-                                <th>Fax</th>
+                                <th>Company Number</th>
+                                <th>Company Phone</th>
+                                <th>PIC Name</th>
+                                <th>PIC Phone</th>
                                 <th>Address</th>
-                                <th>Created</th>
                                 <th>Options</th>
                             </tr>
                         </thead>
@@ -30,10 +31,11 @@
                             <tr v-for="user in users" :key="user.id">
                                 <td>{{ user.code }}</td>
                                 <td>{{ user.name }}</td>
-                                <td>{{ user.phone }}</td>
-                                <td>{{ user.fax }}</td>
+                                <td>{{ user.company_number ?? '-' }}</td>
+                                <td>{{ user.company_phone ??'-' }}</td>
+                                <td>{{ user.pic_name ??'-' }}</td>
+                                <td>{{ user.pic_phone ??'-' }}</td>
                                 <td>{{ user.address }}</td>
-                                <td>{{ user.created_at }}</td>
                                 <td>
                                     <router-link :to="'/customers/' + encryptId(user.id) + ''" class="btn btn-sm btn-primary mr-1">View</router-link>
                                     <router-link :to="'/customers/' + encryptId(user.id) + '/edit'" class="btn btn-sm btn-primary mr-1">Edit</router-link>

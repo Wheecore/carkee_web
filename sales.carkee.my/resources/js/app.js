@@ -12,6 +12,7 @@ import routes from './router';
 
 axios.defaults.APP_URL = process.env.MIX_APP_URL;
 axios.defaults.APP_NAME = process.env.APP_NAME;
+axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
 
 const router = createRouter({
     history: createWebHistory(process.env.APP_URL),
