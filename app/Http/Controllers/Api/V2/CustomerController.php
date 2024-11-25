@@ -386,6 +386,35 @@ class CustomerController extends Controller
         ]);
     }
 
+    public function coupons()
+    {
+        $currentTimestamp = time();
+        $coupons = DB::table('coupons as c')
+        ->whereRaw('? BETWEEN c.start_date AND c.end_date', [$currentTimestamp])
+        ->select('c.id', 'c.type', 'c.code', 'c.discount_title', 'c.details', 'c.product_ids', 'c.discount', 'c.discount_type', 'c.start_date', 'c.end_date', 'c.limit', 'c.gift_type', 'c.gifts')
+        ->get();
+
+        $coupons_arr = $coupons->map(function ($coupon) {
+            $details = json_decode($coupon->details);
+            return [
+                'id' => $coupon->id,
+                'type' => $coupon->type,
+                'code' => $coupon->code,
+                'discount_title' => $coupon->discount_title,
+                'min_buy' => single_price($details->min_buy),
+                'max_discount' => single_price($details->max_discount),
+                'product_ids' => $coupon->product_ids,
+                'discount' => single_price($coupon->discount),
+                'discount_type' => $coupon->discount_type,
+                'start_date' => date(env('DATE_FORMAT'), $coupon->start_date),
+                'end_date' => date(env('DATE_FORMAT'), $coupon->end_date),
+                'usage_limit' => $coupon->limit,
+                'gift_type' => $coupon->gift_type,
+                'gifts' => $coupon->gifts
+            ];
+        });
+    }
+
     public function battery_warranties($user_id)
     {
         $orders = DB::table('orders')
