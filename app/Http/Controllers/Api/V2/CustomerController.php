@@ -402,7 +402,7 @@ class CustomerController extends Controller
                 'code' => $coupon->code,
                 'discount_title' => $coupon->discount_title,
                 'min_buy' => single_price($details->min_buy),
-                'max_discount' => single_price($details->max_discount),
+                'max_discount' => $details->max_discount,
                 'product_ids' => $coupon->product_ids,
                 'discount' => single_price($coupon->discount),
                 'discount_type' => $coupon->discount_type,
