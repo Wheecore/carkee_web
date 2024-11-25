@@ -10,8 +10,10 @@ use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use PDF;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class HomeController extends Controller
 {
@@ -51,7 +53,7 @@ class HomeController extends Controller
 			return response()->json(['errors' => $validator->errors()], 422);
 		}
 		$user = User::where('id', $request->id)->first();
-		if (!\Hash::check($request->old_password, $user->password)) {
+		if (!Hash::check($request->old_password, $user->password)) {
 			return response()->json(['errors' => ['old_password' => 'Old password is incorrect']], 422);
 		}
 		$user->update(['password' => bcrypt($request->password)]);
@@ -291,29 +293,81 @@ class HomeController extends Controller
 		return response()->json(['message' => 'Customer deleted successfully'], 200);
 	}
 
-	public function pdf($id, $type)
+	public function pdf($id, $type = null, $download = true)
 	{
+		// Fetch the order and related information
 		$data['order'] = DB::table('orders')
 			->leftJoin('customers', 'customers.id', '=', 'orders.customer_id')
 			->leftJoin('users as staff', 'staff.id', '=', 'orders.user_id')
-			->select('customers.code as customer_code', 'customers.name', 'staff.name as staff', 'customers.company_phone', 'customers.pic_name', 'customers.pic_phone', 'customers.address', 'orders.user_id', 'orders.customer_id', 'orders.code', 'orders.payment_term', 'orders.payment_due_date', 'orders.customer_po_no', 'orders.do_no', 'orders.total', 'orders.status', DB::raw('DATE_FORMAT(`orders`.created_at, "%Y-%m-%d") as created_at'))
+			->select(
+				'customers.code as customer_code',
+				'customers.name',
+				'staff.name as staff',
+				'customers.company_phone',
+				'customers.pic_name',
+				'customers.pic_phone',
+				'customers.address',
+				'orders.user_id',
+				'orders.customer_id',
+				'orders.code',
+				'orders.payment_term',
+				'orders.payment_due_date',
+				'orders.customer_po_no',
+				'orders.do_no',
+				'orders.total',
+				'orders.status',
+				DB::raw('DATE_FORMAT(`orders`.created_at, "%Y-%m-%d") as created_at')
+			)
 			->where('orders.id', $id)
 			->first();
+
+		// Fetch the order items
 		$data['order_items'] = DB::table('order_items')
 			->leftJoin('products', 'products.id', '=', 'order_items.product_id')
-			->select('products.name', 'order_items.qty', 'order_items.foc', 'order_items.uom', 'order_items.disc', 'order_items.amount')
+			->select(
+				'products.name',
+				'order_items.qty',
+				'order_items.foc',
+				'order_items.uom',
+				'order_items.disc',
+				'order_items.amount'
+			)
 			->where('order_items.order_id', $id)
 			->get()->toArray();
+
+		// Generate the QR code in SVG format
+		$qrCodeData = [
+			'order_code' => $data['order']->code,
+			'customer_name' => $data['order']->name,
+			'total_amount' => $data['order']->total,
+			'payment_due_date' => $data['order']->payment_due_date,
+		];
+
+		$qrCode = QrCode::format('svg')->size(100)->generate(json_encode($qrCodeData));
+		// put the qr code at public folder
+		// unix timestamp
+		$qrCodePath = public_path('/qr-codes/' . $data['order']->code . time() . '.svg');
+		file_put_contents($qrCodePath, $qrCode);
+		// $qrCodePath = public_path('/images/qr_codes/' . $data['order']->code . '.svg');
+
+		$data['qrCode'] = $qrCodePath;
+
 		$data['type'] = $type;
+
+		// Create PDF using DomPDF
 		$pdf = PDF::loadView('pdf.pdf', $data, [
-			'orientation' => 'portrait',
-			'page-size' => 'A4',
+			'orientation' => 'portrait', // You can change this to 'landscape' if needed
+			'page-size' => 'A4', // Page size, changeable
 			'zoom' => 1.0,
 			'title' => 'Order #' . $data['order']->code,
-			// 'header-html' => 'path/to/header.blade.php',
-			// 'footer-html' => 'path/to/footer.blade.php',
-			'dpi' => 300,
+			'dpi' => 300, // High resolution for printing
 		]);
-		return $pdf->download('Order #' . $data['order']->code . '.pdf');
+		// if $download is true, download the PDF,else open it in the browser
+		if ($download) {
+			return $pdf->download('Order #' . $data['order']->code . '.pdf');
+		} else {
+			return $pdf->stream('Order #' . $data['order']->code . '.pdf');
+		}
+		// return $pdf->download('Order #' . $data['order']->code . '.pdf');
 	}
 }
