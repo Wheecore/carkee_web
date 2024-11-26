@@ -131,7 +131,7 @@ var _hoisted_11 = {
 var _hoisted_12 = ["src"];
 var _hoisted_13 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
   "class": "form-group"
-}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h4", null, "Carkee Automative Sdn Bhd."), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", {
+}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h4", null, "Carkee Automotive Sdn Bhd"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", {
   "class": "mb-1"
 }, "32, Jalan SS23/11 Taman SEA. 47400 Petaling Jaya. Selangor 0123440911"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, "Telephone: 0123440911 Email: enquiry@carkee.my")], -1 /* HOISTED */);
 var _hoisted_14 = {
@@ -169,7 +169,7 @@ var _hoisted_25 = {
 var _hoisted_26 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("strong", null, "Customer Code", -1 /* HOISTED */);
 var _hoisted_27 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", {
   "class": "mb-1"
-}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("strong", null, "CARKEE AUTOMOTIVE SDN. BHD")], -1 /* HOISTED */);
+}, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("strong", null, "CARKEE AUTOMOTIVE SDN BHD")], -1 /* HOISTED */);
 var _hoisted_28 = {
   "class": "mb-1"
 };
@@ -282,7 +282,7 @@ var _hoisted_58 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElement
 var _hoisted_59 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", {
   colspan: "5"
 }, "TOTAL (MYR)", -1 /* HOISTED */);
-var _hoisted_60 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"border-2px\"><div class=\"row p-2\"><div class=\"col-md-12\"><div class=\"form-group float-left\"><p class=\"mb-1\">Beneficiary Bank: MAYBANK - K</p><p class=\"mb-1\">Address: G01, West Tower, Ground Floor, Wisma Consplant, Jalan SS16/4, 47500 Subang Jaya, Selangor</p><p class=\"mb-1\">Beneficiary Account No: 512307606485</p></div><div class=\"form-group float-right\"><h5>Carkee Automative Sdn Bhd.</h5></div></div></div></div>", 1);
+var _hoisted_60 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createStaticVNode)("<div class=\"border-2px\"><div class=\"row p-2\"><div class=\"col-md-12\"><div class=\"form-group float-left\"><p class=\"mb-1\">Beneficiary Bank: MAYBANK - K</p><p class=\"mb-1\">Address: G01, West Tower, Ground Floor, Wisma Consplant, Jalan SS16/4, 47500 Subang Jaya, Selangor</p><p class=\"mb-1\">Beneficiary Account No: 512307606485</p></div><div class=\"form-group float-right\"><h5>Carkee Automotive Sdn Bhd</h5></div></div></div></div>", 1);
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_router_link = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("router-link");
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h4", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Order Details "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {

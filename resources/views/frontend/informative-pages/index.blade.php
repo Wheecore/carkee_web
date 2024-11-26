@@ -346,8 +346,8 @@
     <section class="section counters bg-primary text-contrast">
         <div class="container pb-9">
             <div class="section-heading text-center">
-                <h2 class="bold text-contrast">Carkee Automative Sdn Bhd.</h2>
-                <p class="lead">Carkee Automative Sdn Bhd, Malaysia’s new, trendy online tyre and auto parts retailer and distributor. The company was founded in 2020, with various frontend expertise across domestic & international auto parts and maintenance industries. With our end to end automotive aftermarket platform - carkee.my, we offer a wide range of automotive aftermarket parts and services to our customers, leveraging dynamic e-Commerce advantages, mobility technologies and useful data to provide insightful tools to help our customers make better and more favourable decisions - confidently.</p>
+                <h2 class="bold text-contrast">Carkee Automotive Sdn Bhd</h2>
+                <p class="lead">Carkee Automotive Sdn Bhd, Malaysia’s new, trendy online tyre and auto parts retailer and distributor. The company was founded in 2020, with various frontend expertise across domestic & international auto parts and maintenance industries. With our end to end automotive aftermarket platform - carkee.my, we offer a wide range of automotive aftermarket parts and services to our customers, leveraging dynamic e-Commerce advantages, mobility technologies and useful data to provide insightful tools to help our customers make better and more favourable decisions - confidently.</p>
             </div>
             <div class="row">
                 <div class="col-xs-4 col-md-3 text-center"><i data-feather="box" width="36" height="36"></i>

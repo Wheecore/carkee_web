@@ -9,9 +9,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <h1 class="bold display-md-4 text-contrast mb-4">Carkee Automative Sdn Bhd.</h1>
+                    <h1 class="bold display-md-4 text-contrast mb-4">Carkee Automotive Sdn Bhd</h1>
                     <p class="lead text-contrast">
-                        Carkee Automative Sdn Bhd, Malaysia’s new, trendy online tyre and auto parts retailer and distributor. The company was founded in 2020, with various frontend expertise across domestic & international auto parts and maintenance industries.
+                        Carkee Automotive Sdn Bhd, Malaysia’s new, trendy online tyre and auto parts retailer and distributor. The company was founded in 2020, with various frontend expertise across domestic & international auto parts and maintenance industries.
                     </p>
                 </div>
             </div>

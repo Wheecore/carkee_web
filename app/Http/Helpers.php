@@ -858,13 +858,13 @@ if (!function_exists('static_asset')) {
 	 */
 	function static_asset($path, $secure = null)
 	{
-		// return app('url')->asset('public/' . $path, $secure);
+		return app('url')->asset('public/' . $path, $secure);
 		// get APP_ENVAPP_ENV
-		if (env('APP_ENV') == 'local') {
-			return asset($path, $secure);
-		} else {
-			return app('url')->asset('public/' . $path, $secure);
-		}
+		// if (env('APP_ENV') == 'local') {
+		// 	return asset($path, $secure);
+		// } else {
+		// 	return app('url')->asset('public/' . $path, $secure);
+		// }
 // return app('url')->asset($path, $secure);
 
 	}

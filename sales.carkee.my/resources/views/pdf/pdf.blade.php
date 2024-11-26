@@ -16,7 +16,7 @@
                     <div>
                         <img src="{{ public_path('images/carkee-logo.png') }}" style="width: 250px; margin-bottom: 5px;">
                         <h4 style="font-size: 1.3125rem; font-weight: 700; margin-top: 0; margin-bottom: 5px;">
-                            Carkee Automative Sdn Bhd.
+                            Carkee Automotive Sdn Bhd
                         </h4>
                         <p>9, Jalan Linggis 15/24, Seksyen 15, 40200 Shah Alam, Selangor</p>
                         <p>Telephone: 0123440911 Email: enquiry@carkee.my</p>
@@ -156,7 +156,7 @@
                 </td>
                 <td width="50%">
                     <div style="float: right;">
-                        <h5 style="margin-block-end: 10px; font-size: 18px;">Carkee Automative Sdn Bhd.</h5>
+                        <h5 style="margin-block-end: 10px; font-size: 18px;">Carkee Automotive Sdn Bhd</h5>
                     </div>
                 </td>
             </tr>

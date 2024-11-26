@@ -45,7 +45,7 @@
                             </div>
                             <p class="lead mb-5">Don't hesitate to get in contact with us no matter your request. We are here to
                                 help you.</p>
-                                <p class="copyright">© {{ date('Y') }} <em>by</em> <span class="brand bold"> Carkee Automative Sdn Bhd. (1498396-V)</span></p>
+                                <p class="copyright">© {{ date('Y') }} <em>by</em> <span class="brand bold"> Carkee Automotive Sdn Bhd (1498396-V)</span></p>
                             <ul class="list-unstyled list-icon">
                                 <li><i class="fas fa-map-marker text-primary"></i>
                                     <p>32, Jalan SS23/11 Taman SEA. 47400 Petaling Jaya. Selangor</p>

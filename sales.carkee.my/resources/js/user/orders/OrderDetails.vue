@@ -18,7 +18,7 @@
                                 <img v-bind:src="'https://carkee.my/public/uploads/all/PDlvp1gGXHjyiGTeWvqwoUFlJDaZAsfngDqnvI1X.png'" style="width: 250px;" class="img-fluid mb-3">
                             </div>
                             <div class="form-group">
-                                <h4>Carkee Automative Sdn Bhd.</h4>
+                                <h4>Carkee Automotive Sdn Bhd</h4>
                                 <p class="mb-1">9, Jalan Linggis 15/24, Seksyen 15, 40200 Shah Alam, Selangor</p>
                                 <p>Telephone: 0123440911 Email: enquiry@carkee.my</p>
                             </div>
@@ -157,7 +157,7 @@
                                     <p class="mb-1">Beneficiary Account No: 562683215043</p>
                                 </div>
                                 <div class="form-group float-right">
-                                    <h5>Carkee Automative Sdn Bhd.</h5>
+                                    <h5>Carkee Automotive Sdn Bhd</h5>
                                 </div>
                             </div>
                         </div>

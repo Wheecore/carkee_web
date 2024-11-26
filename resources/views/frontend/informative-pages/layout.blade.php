@@ -108,7 +108,7 @@
             <div class="col-md-4 col-12">
                 <div class="container py-4">
                     <p class="lead">Don't wait - <span class="bold">Get Services</span> NOW!</p>
-                    <p class="copyright my-5">© {{ date('Y') }} <em>by</em> <span class="brand bold"> Carkee Automative Sdn Bhd. (1498396-V)</span></p>
+                    <p class="copyright my-5">© {{ date('Y') }} <em>by</em> <span class="brand bold"> Carkee Automotive Sdn Bhd (1498396-V)</span></p>
                     <hr class="mt-5 bg-secondary op-5">
                     <nav class="nav social-icons justify-content-center mt-4">
                         <a href="#" class="btn text-contrast btn-circle btn-sm brand-facebook me-3"><i
