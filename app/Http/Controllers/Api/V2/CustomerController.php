@@ -390,29 +390,69 @@ class CustomerController extends Controller
     {
         $currentTimestamp = time();
         $coupons = DB::table('coupons as c')
-        ->whereRaw('? BETWEEN c.start_date AND c.end_date', [$currentTimestamp])
-        ->select('c.id', 'c.type', 'c.code', 'c.discount_title', 'c.details', 'c.product_ids', 'c.discount', 'c.discount_type', 'c.start_date', 'c.end_date', 'c.limit', 'c.gift_type', 'c.gifts')
-        ->get();
+            ->whereRaw('? BETWEEN c.start_date AND c.end_date', [$currentTimestamp])
+            ->select(
+                'c.id',
+                'c.type',
+                'c.code',
+                'c.discount_title',
+                'c.details',
+                'c.product_ids',
+                'c.discount',
+                'c.discount_type',
+                DB::raw('FROM_UNIXTIME(c.start_date) as start_date'),
+                DB::raw('FROM_UNIXTIME(c.end_date) as end_date'),
+                'c.limit',
+                'c.gift_type',
+                'c.gifts'
+            )
+            ->get();
 
-        $coupons_arr = $coupons->map(function ($coupon) {
-            $details = json_decode($coupon->details);
+        // Process cart_base coupons
+        $cart_base_arr = $coupons->filter(function ($coupon) {
+            return $coupon->type === 'cart_base';
+        })->map(function ($coupon) {
             return [
                 'id' => $coupon->id,
-                'type' => $coupon->type,
                 'code' => $coupon->code,
                 'discount_title' => $coupon->discount_title,
                 'details' => $coupon->details,
                 'product_ids' => $coupon->product_ids,
-                'discount' => single_price($coupon->discount),
+                'discount' => ($coupon->discount_type == 'amount') ? single_price($coupon->discount) : $coupon->discount . '%',
                 'discount_type' => $coupon->discount_type,
                 'start_date' => date(env('DATE_FORMAT'), strtotime($coupon->start_date)),
                 'end_date' => date(env('DATE_FORMAT'), strtotime($coupon->end_date)),
                 'usage_limit' => $coupon->limit,
-                'gift_type' => $coupon->gift_type,
-                'gifts' => $coupon->gifts
             ];
-        });
+        })->values(); 
+
+        // Process gift_base coupons
+        $gift_base_arr = $coupons->filter(function ($coupon) {
+            return $coupon->type === 'gift_base';
+        })->map(function ($coupon) {
+            return [
+                'id' => $coupon->id,
+                'code' => $coupon->code,
+                'discount_title' => $coupon->discount_title,
+                'details' => json_decode($coupon->details, true),
+                'product_ids' => $coupon->product_ids,
+                'discount' => ($coupon->discount_type == 'amount') ? single_price($coupon->discount) : $coupon->discount . '%',
+                'discount_type' => $coupon->discount_type,
+                'start_date' => date(env('DATE_FORMAT'), strtotime($coupon->start_date)),
+                'end_date' => date(env('DATE_FORMAT'), strtotime($coupon->end_date)),
+                'usage_limit' => $coupon->limit,
+                'gift_type' => $coupon->gift_type ?? null,
+                'gifts' => json_decode($coupon->gifts ?? '{}', true),
+            ];
+        })->values(); 
+
+        return response()->json([
+            'result' => true,
+            'cart_base_coupons' => $cart_base_arr,
+            'gift_base_coupons' => $gift_base_arr,
+        ]);
     }
+
 
     public function battery_warranties($user_id)
     {
