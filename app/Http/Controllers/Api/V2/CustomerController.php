@@ -404,7 +404,8 @@ class CustomerController extends Controller
                 DB::raw('FROM_UNIXTIME(c.end_date) as end_date'),
                 'c.limit',
                 'c.gift_type',
-                'c.gifts'
+                'c.gifts',
+                'c.tnc',
             )
             ->get();
 
@@ -423,6 +424,7 @@ class CustomerController extends Controller
                 'start_date' => date(env('DATE_FORMAT'), strtotime($coupon->start_date)),
                 'end_date' => date(env('DATE_FORMAT'), strtotime($coupon->end_date)),
                 'usage_limit' => $coupon->limit,
+                'tnc' => $coupon->tnc,
             ];
         })->values(); 
 
@@ -443,6 +445,7 @@ class CustomerController extends Controller
                 'usage_limit' => $coupon->limit,
                 'gift_type' => $coupon->gift_type ?? null,
                 'gifts' => json_decode($coupon->gifts ?? '{}', true),
+                'tnc' => $coupon->tnc,
             ];
         })->values(); 
 
