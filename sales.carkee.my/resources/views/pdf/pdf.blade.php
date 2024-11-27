@@ -14,7 +14,8 @@
             <tr>
                 <td>
                     <div>
-                        <img src="{{ public_path('images/carkee-logo.png') }}" style="width: 250px; margin-bottom: 5px;">
+                        <img src="{{ public_path('images/carkee-logo.png') }}"
+                            style="width: 250px; margin-bottom: 5px;">
                         <h4 style="font-size: 1.3125rem; font-weight: 700; margin-top: 0; margin-bottom: 5px;">
                             Carkee Automotive Sdn Bhd
                         </h4>
@@ -32,7 +33,7 @@
                 <td width="50%">
                     <div style="text-align: right;">
                         @if ($type == 'invoice')
-                            <h5 style="margin: unset; font-size: 18px;">SALES ORDER</h5>
+                            <h5 style="margin: unset; font-size: 18px;">INVOICE</h5>
                         @else
                             <h5 style="margin: unset; font-size: 18px;">DELIVERY ORDER</h5>
                         @endif
@@ -52,9 +53,11 @@
         <tbody>
             <tr>
                 <td width="50%" style="border: 2px solid #333; padding: 5px;">
-                    <p style="margin: unset; margin-block-start: unset;"><strong>Customer Code</strong>: {{ $order->customer_code }}</p>
-                    <p style="margin: unset;"><strong>{{$order->name}}</strong></p>
-                    <p class="mb-1"><strong>Contact Person</strong>: {{ $order->pic_name ?: '-' }} ({{$order->pic_name && $order->pic_phone ? $order->pic_phone : '-'}})</p>
+                    <p style="margin: unset; margin-block-start: unset;"><strong>Customer Code</strong>:
+                        {{ $order->customer_code }}</p>
+                    <p style="margin: unset;"><strong>{{ $order->name }}</strong></p>
+                    <p class="mb-1"><strong>Contact Person</strong>: {{ $order->pic_name ?: '-' }}
+                        ({{ $order->pic_name && $order->pic_phone ? $order->pic_phone : '-' }})</p>
                     <p><strong>Tel</strong>: {{ $order->company_phone }}</p>
                 </td>
                 <td width="50%" style="border: 2px solid #333; padding: 5px;">
@@ -105,9 +108,11 @@
                     <td style="border: 1px solid #333; padding: 5px;">{{ $item->foc }}</td>
                     <td style="border: 1px solid #333; padding: 5px;">{{ $item->uom }}</td>
                     @if ($type == 'invoice')
-                        <td style="border: 1px solid #333; padding: 5px;">{{ $item->amount }}</td>
-                        <td style="border: 1px solid #333; padding: 5px;">{{ $item->disc }}</td>
-                        <td style="border: 1px solid #333; padding: 5px;">{{ (($item->qty) * ($item->amount)) - (($item->disc)/100 * (($item->qty) * ($item->amount))) }}</td>
+                        <td style="border: 1px solid #333; padding: 5px;">{{ number_format($item->amount, 2) }}</td>
+                        <td style="border: 1px solid #333; padding: 5px;">{{ number_format($item->disc, 2) }}</td>
+                        <td style="border: 1px solid #333; padding: 5px;">
+                            {{ number_format($item->qty * $item->amount - ($item->disc / 100) * ($item->qty * $item->amount), 2) }}
+                        </td>
                     @endif
                 </tr>
             @endforeach
@@ -126,16 +131,24 @@
                         <table align="center" cellpadding="0" cellspacing="0" style="color: #000; padding-top: 20px;">
                             <tbody>
                                 <tr>
-                                    <th style="text-align: right; border: 1px solid #333; padding: 5px; font-size: 15px;">SUBTOTAL (MYR)</th>
-                                    <td style="border: 1px solid #333; padding: 5px;">{{ $order->total }}</td>
+                                    <th
+                                        style="text-align: right; border: 1px solid #333; padding: 5px; font-size: 15px;">
+                                        SUBTOTAL (MYR)</th>
+                                    <td style="border: 1px solid #333; padding: 5px;">
+                                        {{ number_format($order->total, 2) }}</td>
                                 </tr>
                                 <tr>
-                                    <th style="text-align: right; border: 1px solid #333; padding: 5px; font-size: 15px;">TAX (MYR)</th>
-                                    <td style="border: 1px solid #333; padding: 5px;">0.00</td>
+                                    <th
+                                        style="text-align: right; border: 1px solid #333; padding: 5px; font-size: 15px;">
+                                        TAX (MYR)</th>
+                                    <td style="border: 1px solid #333; padding: 5px;">{{ number_format(0, 2) }}</td>
                                 </tr>
                                 <tr>
-                                    <th style="text-align: right; border: 1px solid #333; padding: 5px; font-size: 15px;">TOTAL (MYR)</th>
-                                    <td style="border: 1px solid #333; padding: 5px;">{{ $order->total }}</td>
+                                    <th
+                                        style="text-align: right; border: 1px solid #333; padding: 5px; font-size: 15px;">
+                                        TOTAL (MYR)</th>
+                                    <td style="border: 1px solid #333; padding: 5px;">
+                                        {{ number_format($order->total, 2) }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -144,24 +157,27 @@
             </tr>
         </tbody>
     </table>
-    <table align="center" cellpadding="0" cellspacing="0"
-        style="color: #000; width: 100%; padding-top: 20px; border: 2px solid #333; padding: 5px;">
-        <tbody>
-            <tr>
-                <td width="50%">
-                    <div style="float: left;">
-                        <p style="margin-bottom: 5px; margin-block-start: unset;">Beneficiary Bank: MAYBANK</p>
-                        <p style="margin-bottom: 5px;">Beneficiary Account No: 562683215043</p>
-                    </div>
-                </td>
-                <td width="50%">
-                    <div style="float: right;">
-                        <h5 style="margin-block-end: 10px; font-size: 18px;">Carkee Automotive Sdn Bhd</h5>
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <!-- if invoice only show this -->
+    @if ($type == 'invoice')
+        <table align="center" cellpadding="0" cellspacing="0"
+            style="color: #000; width: 100%; padding-top: 20px; border: 2px solid #333; padding: 5px;">
+            <tbody>
+                <tr>
+                    <td width="50%">
+                        <div style="float: left;">
+                            <p style="margin-bottom: 5px; margin-block-start: unset;">Beneficiary Bank: MAYBANK</p>
+                            <p style="margin-bottom: 5px;">Beneficiary Account No: 562683215043</p>
+                        </div>
+                    </td>
+                    <td width="50%">
+                        <div style="float: right;">
+                            <h5 style="margin-block-end: 10px; font-size: 18px;">Carkee Automotive Sdn Bhd</h5>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    @endif
 </body>
 
 </html>
