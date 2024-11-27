@@ -26,9 +26,9 @@
                                 <div class="form-group">
                                     <h4>Carkee Automotive Sdn Bhd</h4>
                                     <p class="mb-1">No. 9, Jalan Linggis 15/24,
-                                        Seksyen 15, 
+                                        Seksyen 15,
                                         40200 Shah Alam,
-                                        Selangor D.E. 
+                                        Selangor D.E.
                                         Malaysia</p>
                                     <p>Telephone: 0123440911 Email: enquiry@carkee.my</p>
                                 </div>
@@ -126,11 +126,12 @@
                                                     <td>{{ item.qty }}</td>
                                                     <td>{{ item.foc }}</td>
                                                     <td>{{ item.uom }}</td>
-                                                    <td>RM {{ item.amount }}</td>
-                                                    <td>{{ item.disc }}</td>
-                                                    <td>RM {{ (parseInt(item.qty) * parseFloat(item.amount)) -
-                                                        (parseFloat(item.disc)/100 * (parseInt(item.qty) *
-                                                        parseFloat(item.amount))) }}</td>
+                                                    <td>RM {{ formatPrice(item.amount) }}</td>
+                                                    <td>{{ formatPrice(item.disc) }}</td>
+                                                    <td>RM {{ formatPrice((parseInt(item.qty) * parseFloat(item.amount))
+                                                        - (parseFloat(item.disc) / 100 * (parseInt(item.qty) *
+                                                        parseFloat(item.amount)))) }}</td>
+
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -150,15 +151,15 @@
                                         <tbody>
                                             <tr>
                                                 <td colspan="5">SUBTOTAL (MYR)</td>
-                                                <td>RM {{ order.total }}</td>
+                                                <td>RM {{ formatPrice(order.total) }}</td>
                                             </tr>
                                             <tr>
                                                 <td colspan="5">TAX (MYR)</td>
-                                                <td>RM 0.00</td>
+                                                <td>RM {{ formatPrice(0) }}</td>
                                             </tr>
                                             <tr>
                                                 <td colspan="5">TOTAL (MYR)</td>
-                                                <td>RM {{ order.total }}</td>
+                                                <td>RM {{ formatPrice(order.total) }}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -199,6 +200,9 @@ export default {
     },
     methods: {
         decryptId,
+        formatPrice(value) {
+            return parseFloat(value).toFixed(2);
+        },
         async fetchOrderDetails() {
             await axios.post('/api/orders/show', {
                 id: this.id,
