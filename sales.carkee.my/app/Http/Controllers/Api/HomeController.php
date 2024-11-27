@@ -367,19 +367,15 @@ class HomeController extends Controller
 			// return $pdf->download('Order #' . $data['order']->code . '.pdf');
 			if ($type == 'invoice') {
 				return $pdf->download('Invoice #' . $data['order']->code . '.pdf');
-			} elseif ($type == 'delivery-order') {
+			} else {
 				return $pdf->download('Delivery Order #' . $data['order']->code . '.pdf');
-			} else{
-				return $pdf->download('Order #' . $data['order']->code . '.pdf');
 			}
 		} else {
 			// return $pdf->stream('Order #' . $data['order']->code . '.pdf');
 			if ($type == 'invoice') {
 				return $pdf->stream('Invoice #' . $data['order']->code . '.pdf');
-			} elseif ($type == 'delivery-order') {
+			} else {
 				return $pdf->stream('Delivery Order #' . $data['order']->code . '.pdf');
-			} else{
-				return $pdf->stream('Order #' . $data['order']->code . '.pdf');
 			}
 		}
 		// return $pdf->download('Order #' . $data['order']->code . '.pdf');
