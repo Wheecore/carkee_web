@@ -7,10 +7,10 @@
                     <button @click="deleteOrder" :data-id="order.id"
                         class="btn btn-sm btn-danger btn-delete float-right mr-1" data-bs-toggle="modal"
                         data-bs-target="#delete">Delete</button>
-                    <button @click="downloadInvoice" class="btn btn-sm btn-primary float-right mr-1">
+                    <!-- <button @click="downloadInvoice" class="btn btn-sm btn-primary float-right mr-1">
                         Invoice
                         <div class="spinner-border d-none" role="status"></div>
-                    </button>
+                    </button> -->
                     <router-link :to="'/admin/orders/' + encryptId + '/edit'"
                         class="btn btn-sm btn-primary float-right mr-1">Edit</router-link>
                 </h4>
