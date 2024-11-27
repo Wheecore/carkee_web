@@ -29,7 +29,9 @@
                         <h4 style="font-size: 1.3125rem; font-weight: 700; margin-top: 0; margin-bottom: 5px;">
                             Carkee Automotive Sdn Bhd
                         </h4>
-                        <p>9, Jalan Linggis 15/24, Seksyen 15, 40200 Shah Alam, Selangor</p>
+                        <p>No. 9, Jalan Linggis 15/24,
+                           Seksyen 15, 40200 Shah Alam,
+                           Selangor D.E. Malaysia</p>
                         <p>Telephone: 0123440911 Email: enquiry@carkee.my</p>
                     </div>
                 </td>
