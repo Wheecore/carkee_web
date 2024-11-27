@@ -406,6 +406,7 @@ class CustomerController extends Controller
                 'c.gift_type',
                 'c.gifts',
                 'c.tnc',
+                'c.description',
             )
             ->get();
 
@@ -425,6 +426,7 @@ class CustomerController extends Controller
                 'end_date' => date(env('DATE_FORMAT'), strtotime($coupon->end_date)),
                 'usage_limit' => $coupon->limit,
                 'tnc' => $coupon->tnc,
+                'description' => $coupon->description,
             ];
         })->values(); 
 
@@ -446,6 +448,7 @@ class CustomerController extends Controller
                 'gift_type' => $coupon->gift_type ?? null,
                 'gifts' => json_decode($coupon->gifts ?? '{}', true),
                 'tnc' => $coupon->tnc,
+                'description' => $coupon->description,
             ];
         })->values(); 
 
