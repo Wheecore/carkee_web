@@ -462,7 +462,7 @@ class CustomerController extends Controller
             ->where('deals.status', 1)
             ->where('deals.type', 'membership')
             ->select(
-            'deals.id AS is', 
+            'deals.id AS id', 
             'title',
             DB::raw("DATE_FORMAT(FROM_UNIXTIME(start_date), '%d/%m/%Y') AS start_date"),
             DB::raw("DATE_FORMAT(FROM_UNIXTIME(end_date), '%d/%m/%Y') AS end_date"),
