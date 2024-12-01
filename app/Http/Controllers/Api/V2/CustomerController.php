@@ -464,10 +464,8 @@ class CustomerController extends Controller
             ->select(
             'deals.id AS is', 
             'title',
-            // 'start_date' is timestamp, convert to DD/MM/YYYY
-            DB::raw("FROM_UNIXTIME(deals.start_date) as start_date"),
-            // 'end_date' is timestamp, convert to DD/MM/YYYY
-            DB::raw("FROM_UNIXTIME(deals.end_date) as end_date"),
+            DB::raw("DATE_FORMAT(FROM_UNIXTIME(start_date), '%d/%m/%Y') AS start_date"),
+            DB::raw("DATE_FORMAT(FROM_UNIXTIME(end_date), '%d/%m/%Y') AS end_date"),
             DB::raw("CONCAT('" . url('/') . "/public/', uploads.file_name) AS banner")
             )->get();
 
