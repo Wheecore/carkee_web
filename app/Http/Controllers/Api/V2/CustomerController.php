@@ -27,6 +27,8 @@ use App\Models\WorkshopAvailability;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use App\Models\Customer;
+
 
 class CustomerController extends Controller
 {
