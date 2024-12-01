@@ -469,7 +469,7 @@ class CustomerController extends Controller
             DB::raw("CONCAT('" . url('/') . "/public/', uploads.file_name) AS banner")
             )->get();
 
-        $customer = Customer::join('users', 'users.id', '=', 'customers.user_id')
+        $customer = Customer::leftJoin('users', 'users.id', '=', 'customers.user_id')
             ->where('customers.user_id', $user_id)
             ->select('customers.point_balance', 'users.name')
             ->first();
