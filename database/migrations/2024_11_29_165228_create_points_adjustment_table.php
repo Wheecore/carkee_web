@@ -13,7 +13,7 @@ class CreatePointsAdjustmentTable extends Migration
 	{
 		Schema::create('points_adjustment', function (Blueprint $table) {
 			$table->id(); // Auto-incrementing ID
-			$table->int('user_id'); // User ID
+			$table->integer('user_id'); // User ID
 			$table->string('point', 255); // Use VARCHAR instead of INTEGER for points
 			$table->string('remark')->nullable(); // Optional remark
 			$table->timestamps(); // Created at and updated at
