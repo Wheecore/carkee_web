@@ -454,10 +454,12 @@ class CustomerController extends Controller
 
         // get deals and offers
         // table deals where status = 1, type = 'membership'
+
         $deals = DB::table('deals')
+            ->join('uploads', 'deals.banner', '=', 'uploads.id')
             ->where('status', 1)
             ->where('type', 'membership')
-            ->select('id', 'title', 'description', 'discount', 'discount_type', 'start_date', 'end_date', 'limit')
+            ->select('id', 'title', 'description', 'discount', 'discount_type', 'start_date', 'end_date', 'limit', "CONCAT('" . url('/') . "/public/', uploads.file_name) AS banner")
             ->get();
 
         return response()->json([
