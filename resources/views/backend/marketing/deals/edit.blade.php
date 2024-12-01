@@ -76,6 +76,7 @@
                                     <option value="tyre" {{ ($deal->type == 'tyre')?'selected':'' }}>{{ translate('Tyre') }}</option>
                                     <option value="service" {{ ($deal->type == 'service')?'selected':'' }}>{{ translate('Service') }}</option>
                                     <option value="car_wash" {{ ($deal->type == 'car_wash')?'selected':'' }}>{{ translate('Car Wash') }}</option>
+                                    <option value="membership" {{ ($deal->type == 'membership')?'selected':'' }}>{{ translate('Reward') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -174,14 +175,19 @@
                     $("#car_wash_products").hide();
                     $("#discount_alert").show();
                 }
-                if(deal_value == 'service'){
+                else if(deal_value == 'service'){
                     $("#today_tyre_products").hide();
                     $("#car_wash_products").hide();
                     $("#discount_alert").hide();
                 }
-                if(deal_value == 'car_wash'){
+                else if(deal_value == 'car_wash'){
                     $("#today_tyre_products").hide();
                     $("#car_wash_products").show();
+                    $("#discount_alert").hide();
+                }
+                else if(deal_value == 'membership'){
+                    $("#today_tyre_products").hide();
+                    $("#car_wash_products").hide();
                     $("#discount_alert").hide();
                 }
             }

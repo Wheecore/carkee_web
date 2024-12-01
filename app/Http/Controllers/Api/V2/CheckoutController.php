@@ -22,6 +22,9 @@ use App\Models\Payment;
 use App\Models\Shop;
 use App\User;
 use Illuminate\Support\Facades\Mail;
+use App\Models\PointsAdjustment;
+use App\Models\Customer;
+
 
 class CheckoutController
 {
@@ -713,6 +716,18 @@ class CheckoutController
                 // echo $e;
             }
         }
+
+        // update customer point, 1 point = 1 currency unit, if have decimal point then floor it
+        $adjustment = new PointsAdjustment();
+        $adjustment->user_id = $order->user_id;
+        $adjustment->points = floor($order->grand_total);
+        $adjustment->remark = 'Order (' . $order->code . ') placed';
+        $adjustment->save();
+
+        // update customes.point_balance
+        $customer = Customer::where('user_id', $order->user_id)->first();
+        $customer->point_balance = PointsAdjustment::sumPointsForUser($order->user_id);
+        $customer->save();
         return 1;
     }
 

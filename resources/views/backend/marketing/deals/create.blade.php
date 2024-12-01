@@ -63,6 +63,7 @@
                                     <option value="tyre">{{ translate('Tyre') }}</option>
                                     <option value="service">{{ translate('Service') }}</option>
                                     <option value="car_wash">{{ translate('Car Wash') }}</option>
+                                    <option value="membership">{{ translate('Reward') }}</option>
                                 </select>
                             </div>
                         </div>

@@ -450,10 +450,19 @@ class CustomerController extends Controller
                 'tnc' => $coupon->tnc,
                 'description' => $coupon->description,
             ];
-        })->values(); 
+        })->values();
+
+        // get deals and offers
+        // table deals where status = 1, type = 'membership'
+        $deals = DB::table('deals')
+            ->where('status', 1)
+            ->where('type', 'membership')
+            ->select('id', 'title', 'description', 'discount', 'discount_type', 'start_date', 'end_date', 'limit')
+            ->get();
 
         return response()->json([
             'result' => true,
+            'deals' => $deals,
             'cart_base_coupons' => $cart_base_arr,
             'gift_base_coupons' => $gift_base_arr,
         ]);

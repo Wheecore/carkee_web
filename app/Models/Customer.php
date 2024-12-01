@@ -9,6 +9,7 @@ class Customer extends Model
 {
     protected $fillable = [
       'user_id',
+      'point_balance',
     ];
     public function user(){
     	return $this->belongsTo(User::class);
