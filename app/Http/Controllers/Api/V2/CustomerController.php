@@ -459,7 +459,7 @@ class CustomerController extends Controller
             ->join('uploads', 'deals.banner', '=', 'uploads.id')
             ->where('status', 1)
             ->where('type', 'membership')
-            ->select('deals.id AS is', 'title', 'description', 'discount', 'discount_type', 'start_date', 'end_date', 'limit', "CONCAT('" . url('/') . "/public/', uploads.file_name) AS banner")
+            ->select('deals.id AS is', 'title', 'start_date', 'end_date', "CONCAT('" . url('/') . "/public/', uploads.file_name) AS banner")
             ->get();
 
         return response()->json([
