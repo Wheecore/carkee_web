@@ -386,7 +386,7 @@ class CustomerController extends Controller
         ]);
     }
 
-    public function coupons()
+    public function coupons($user_id)
     {
         $currentTimestamp = time();
         $coupons = DB::table('coupons as c')
@@ -467,8 +467,14 @@ class CustomerController extends Controller
             DB::raw("CONCAT('" . url('/') . "/public/', uploads.file_name) AS banner")
             )->get();
 
+        $customer = Customer::join('users', 'users.id', '=', 'customers.user_id')
+            ->where('customers.user_id', $user_id)
+            ->select('customers.point_balance', 'users.name')
+            ->first();
+
         return response()->json([
             'result' => true,
+            'customer' => $customer,
             'deals' => $deals,
             'cart_base_coupons' => $cart_base_arr,
             'gift_base_coupons' => $gift_base_arr,

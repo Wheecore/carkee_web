@@ -150,7 +150,7 @@ Route::prefix('v2')->group(function () {
             Route::get('view-again-qr-code/{qrcode_id}', 'Api\V2\CustomerController@ViewAgain');
             Route::get('referral-Url/{user_id}', 'Api\V2\CustomerController@referralUrl');
             Route::get('user-coupons/{user_id}', 'Api\V2\CustomerController@userCoupons');
-            Route::get('coupons', 'Api\V2\CustomerController@coupons');
+            Route::get('coupons/{user_id}', 'Api\V2\CustomerController@coupons');
             Route::post('carlist-orders', 'Api\V2\CustomerController@carlistOrders');
             Route::post('/reassign-workshop', 'Api\V2\CustomerController@orderReAssign');
             Route::get('/complete-order/{order_id}', 'Api\V2\CustomerController@completeUserOrder');
