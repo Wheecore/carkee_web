@@ -459,8 +459,13 @@ class CustomerController extends Controller
             ->join('uploads', 'deals.banner', '=', 'uploads.id')
             ->where('status', 1)
             ->where('type', 'membership')
-            ->select('deals.id AS is', 'title', 'start_date', 'end_date', "CONCAT('" . url('/') . "/public/', uploads.file_name) AS banner")
-            ->get();
+            ->select(
+            'deals.id AS is', 
+            'title',
+            'start_date',
+            'end_date', 
+            DB::raw("CONCAT('" . url('/') . "/public/', uploads.file_name) AS banner")
+            )->get();
 
         return response()->json([
             'result' => true,
@@ -469,7 +474,6 @@ class CustomerController extends Controller
             'gift_base_coupons' => $gift_base_arr,
         ]);
     }
-
 
     public function battery_warranties($user_id)
     {
