@@ -457,8 +457,8 @@ class CustomerController extends Controller
 
         $deals = DB::table('deals')
             ->join('uploads', 'deals.banner', '=', 'uploads.id')
-            ->where('status', 1)
-            ->where('type', 'membership')
+            ->where('deals.status', 1)
+            ->where('deals.type', 'membership')
             ->select(
             'deals.id AS is', 
             'title',
