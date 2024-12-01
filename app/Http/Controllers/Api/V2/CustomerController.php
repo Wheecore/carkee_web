@@ -471,7 +471,7 @@ class CustomerController extends Controller
 
         $customer = Customer::leftJoin('users', 'users.id', '=', 'customers.user_id')
             ->where('customers.user_id', $user_id)
-            ->select("customers.point_balance", "users.name", "'Gold' as tier")
+            ->select('customers.point_balance', 'users.name', DB::raw("'Gold' as tier"))
             ->first();
 
         return response()->json([
