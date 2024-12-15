@@ -39,6 +39,6 @@ class AddCustomerCodeToShopsTable extends Migration
 		});
 	}
 
-    // php artisan migrate --path=/database/migrations/2024_12_14_170439_add_customer_code_and_address_column_to_shops_table.php
-    // php artisan migrate:rollback --path=/database/migrations/2024_12_14_170439_add_customer_code_and_address_column_to_shops_table.php
+    // php artisan migrate --path=/database/migrations/2024_12_14_170439_add_customer_code_to_shops_table.php
+    // php artisan migrate:rollback --path=/database/migrations/2024_12_14_170439_add_customer_code_to_shops_table.php
 }
