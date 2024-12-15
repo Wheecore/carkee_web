@@ -241,7 +241,70 @@ class HomeController extends Controller
 			$customer->code = sprintf('%s%03d', strtoupper($first_char), $number + 1);
 		}
 		$customer->save();
+
+		$this->update_customer_as_shop($customer);
+
 		return response()->json(['message' => 'Customer created successfully'], 200);
+	}
+	
+	public function update_customer_as_shop($customer){
+		$db = DB::connection('mysql_secondary');
+
+		// using customer code as shop code
+		$shop = $db->table('shops')->where('customer_code', $customer->code)->first();
+
+		// using google api to get the shop location, longitude and latitude
+		$google_map_api_key = env('GOOGLE_MAP_API_KEY');
+		$address = urlencode( $customer->address);
+		$url = "https://maps.googleapis.com/maps/api/geocode/json?address={$address}&key={$google_map_api_key}";
+		$resp_json = file_get_contents($url);
+		$resp = json_decode($resp_json, true);
+		if ($resp['status'] == 'OK') {
+			$lat = $resp['results'][0]['geometry']['location']['lat'];
+			$lng = $resp['results'][0]['geometry']['location']['lng'];
+			$shop_location = $resp['results'][0]['formatted_address'];
+			// if exist, update the shop
+			if($shop){
+				$db->table('shops')->where('customer_code', $customer->code)->update([
+					'name' => $customer->name,
+					'phone' => $customer->company_phone,
+					'address' => $shop_location,
+					'contact_no' => $customer->pic_phone,
+					'latitude' => $lat,
+					'longitude' => $lng,
+				]);
+
+				$db->table('users')->where('id', $shop->user_id)->update([
+					'name' => $customer->pic_name,
+					'phone' => $customer->pic_phone,
+					'email' => $customer->email,
+				]);
+			}else{
+				$db->table('users')->insert([
+					'name' => $customer->name,
+					'email' => $customer->email,
+					'password' => Hash::make("password"),
+					'user_type' => 'seller',
+				]);
+
+				$user = $db->table('users')->where('email', $customer->email)->first();
+
+				$db->table('sellers')->insert([
+					'user_id' => $user->id,
+				]);
+
+				$db->table('shops')->insert([
+					'customer_code' => $customer->code,
+					'name' => $customer->name,
+					'phone' => $customer->company_phone,
+					'address' => $shop_location,
+					'contact_no' => $customer->pic_phone,
+					'latitude' => $lat,
+					'longitude' => $lng,
+					'user_id' => $user->id,
+				]);
+			}
+		}		
 	}
 
 	public function customer_show(Request $request)
@@ -284,6 +347,8 @@ class HomeController extends Controller
 			'pic_phone' => $request->pic_phone,
 			'email' => $request->email,
 		]);
+		$customer = Customer::find($request->id);
+		$this->update_customer_as_shop($customer);
 		return response()->json(['message' => 'Customer updated successfully'], 200);
 	}
 

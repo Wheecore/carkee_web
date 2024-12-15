@@ -63,7 +63,13 @@ class AdminController extends Controller
 	// Products
 	public function sync_products(Request $request)
 	{
-		$products = DB::connection('mysql_secondary')->table('products')->select('name', 'qty', 'cost_price')->whereIn('category_id', [1, 4])->get()->toArray();
+		$products = DB::connection('mysql_secondary')
+		->table('products')
+		->select('products.name', 'products.qty', 'products.cost_price')
+		->joint('categories', 'products.category_id', '=', 'categories.id')
+		->whereIn('categories.name', ["Tyre","Car Wash","Parts"])
+		->get()
+		->toArray();
 		foreach ($products as $product) {
 			$synced_product = Product::where('name', $product->name)->first();
 			if ($synced_product) {

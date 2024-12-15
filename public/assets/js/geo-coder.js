@@ -48,10 +48,8 @@ function fillInAddress() {
         var addressType = place.address_components[i].types[0];
         if (componentForm[addressType]) {
             var val = place.address_components[i][componentForm[addressType]];
-            if($('#'+addressType).length>0)
-                $('#'+addressType).val(val);
-            if(addressType == 'street_number' || addressType == 'route') {
-                address += ' ' + val;
+            if ($('#' + addressType).length > 0) {
+                $('#' + addressType).val(val);
             }
         }
     }

@@ -69,8 +69,8 @@
                                 </div>
                             </th>
                             <th>{{ translate('Name') }}</th>
-                            <th>{{ translate('Phone') }}</th>
-                            <th>{{ translate('Email Address') }}</th>
+                            <th>{{ translate('PIC Phone') }}</th>
+                            <th>{{ translate('PIC Email Address') }}</th>
                             <th data-breakpoints="lg">{{ translate('Workshop Address') }}</th>
                             <th width="10%">{{ translate('Options') }}</th>
                         </tr>

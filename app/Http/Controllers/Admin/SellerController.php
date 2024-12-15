@@ -41,7 +41,7 @@ class SellerController extends Controller
 
     public function create()
     {
-        $categories = Category::whereIn('name',['Tyre','Services'])->select('id','name')->orderBy('id', 'asc')->get();
+        $categories = Category::whereIn('name',['Tyre','Car Wash','Parts'])->select('id','name')->orderBy('id', 'asc')->get();
         return view('backend.sellers.create', compact('categories'));
     }
 
@@ -77,6 +77,8 @@ class SellerController extends Controller
                 $shop->description = $request->description;
                 $shop->availability_duration = $request->avail_duration;
                 $shop->save();
+
+                $this->update_shop_as_customer(DB::table('shops')->where('user_id', $seller->user_id)->first(), $user);
                 flash(translate('Workshop has been inserted successfully'))->success();
                 return redirect()->route('sellers.index');
             }
@@ -89,7 +91,7 @@ class SellerController extends Controller
     {
         $seller = Seller::findOrFail(decrypt($id));
         $shop = DB::table('shops')->where('user_id', $seller->user_id)->first();
-        $categories = Category::whereIn('name',['Tyre','Services'])->select('id','name')->orderBy('id', 'asc')->get();
+        $categories = Category::whereIn('name',['Tyre','Car Wash','Parts'])->select('id','name')->orderBy('id', 'asc')->get();
         return view('backend.sellers.edit', compact('seller', 'shop', 'categories'));
     }
 
@@ -122,12 +124,38 @@ class SellerController extends Controller
                     'description' => $request->description,
                     'availability_duration' => $request->avail_duration
                 ]);
+                $this->update_shop_as_customer(
+                    DB::table('shops')->where('user_id', $seller->user_id)->first(),
+                    $user
+                );
                 flash(translate('Workshop has been updated successfully'))->success();
                 return redirect()->route('sellers.index');
         }
 
         flash(translate('Something went wrong'))->error();
         return back();
+    }
+
+    public function update_shop_as_customer($shop,$user)
+    {
+        $db = DB::connection('mysql_secondary');
+        $customers = $db->table('customers')->where('code', $shop->customer_code)->first();
+        if ($customers) {
+            $db->table('customers')->where('code', $shop->customer_code)->update([
+                'name' => $shop->name,
+                'company_phone' => $shop->contact_no,
+                'address' => $shop->address,
+                'email' => $user->email,
+                'pic_name' => $user->name,
+            ]);
+        } else {
+            $db->table('customers')->insert([
+                'name' => $shop->name,
+                'company_phone' => $shop->contact_no,
+                'address' => $shop->address,
+                'code' => $shop->customer_code,
+            ]);
+        }
     }
 
     public function destroy($id)
