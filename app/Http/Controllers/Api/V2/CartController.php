@@ -820,7 +820,7 @@ class CartController extends Controller
         $brand_filter = $request->filter_by_brand;
         $front_rear_filter = $request->filter_by_front_rear;
         $product_filter = $request->filter_by_products;
-        $featured_categories = FeaturedCategory::select('id', 'name')->get();
+        $featured_categories = FeaturedCategory::select('id', 'name')->orderBy('name','asc')->get();
         $vehicle_categories = VehicleCategory::select('id', 'name')->get();
         $size_categories = SizeCategory::select('id', 'name')->orderBy('name','desc')->get();
         $brands = Brand::orderBy('name','asc')->select('id', 'name')->get();
