@@ -821,10 +821,10 @@ class CartController extends Controller
         $front_rear_filter = $request->filter_by_front_rear;
         $product_filter = $request->filter_by_products;
         $featured_categories = FeaturedCategory::select('id', 'name')->orderBy('name','asc')->get();
-        $vehicle_categories = VehicleCategory::select('id', 'name')->get();
+        $vehicle_categories = VehicleCategory::select('id', 'name')->orderBy('name','asc')->get();
         $size_categories = SizeCategory::select('id', 'name')->orderBy('name','desc')->get();
-        $brands = Brand::orderBy('name','asc')->select('id', 'name')->get();
-        $tyre_brands = DB::table('brand_datas')->where('type','tyre_brands')->select('id', 'name')->get();
+        $brands = Brand::orderBy('name','asc')->select('id', 'name')->orderBy('name','asc')->get();
+        $tyre_brands = DB::table('brand_datas')->where('type','tyre_brands')->select('id', 'name')->orderBy('name','asc')->get();
 
         $lists_arr = [];
         if ($user_id) {
