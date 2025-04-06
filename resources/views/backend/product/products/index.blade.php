@@ -27,14 +27,13 @@
     </div>
 </div>
 <br>
+<h5 class="">{{ translate('All Product') }}</h5>
 
 <div class="card">
     <form id="sort_products" action="" method="GET">
-        <div class="card-header row gutters-5">
-            <div class="col">
-                <h5 class="mb-md-0 h6">{{ translate('All Product') }}</h5>
-            </div>
-            <div class="dropdown mb-2 mb-md-0">
+        <div class="card-header row gutters-6">
+
+            <div class="dropdown mb-2 mb-md-0 col">
                 <button class="btn border dropdown-toggle" type="button" data-toggle="dropdown">
                     {{ translate('Bulk Action') }}
                 </button>
@@ -43,7 +42,7 @@
                         {{ translate('Delete selection') }}</a>
                 </div>
             </div>
-            <div class="col-md-2 ml-auto">
+            <div class="col-md-2">
                 <select class="form-control form-control-sm aiz-selectpicker mb-2 mb-md-0" name="tyre_brand_id" onchange="sort_products()">
                     <option value="">{{ translate('Tyre Brands') }}</option>
                     @foreach ($tyre_brands as $tyre_brand)
@@ -52,7 +51,8 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-md-2 ml-auto">
+
+            <div class="col-md-2">
                 <select class="form-control form-control-sm aiz-selectpicker mb-2 mb-md-0" name="cat_id" onchange="sort_products()">
                     <option value="">{{ translate('All Categories') }}</option>
                     @foreach ($categories as $key => $category)
@@ -61,8 +61,15 @@
                     @endforeach
                 </select>
             </div>
-
-            <div class="col-md-2 ml-auto">
+            <div class="col-md-2" id="frontrear-ddl">
+                <select class="form-control form-control-sm aiz-selectpicker mb-2 mb-md-0" name="front_rear" id="front_rear" onchange="sort_products()">
+                    <option value="">{{ translate('Choose Front/Rear') }}</option>
+                    <option value="front" @if($front_rear == "front") selected @endif>Front</option>
+                    <option value="rear" @if($front_rear == "rear") selected @endif>Rear</option>
+                    <option value="front/rear" @if($front_rear == "front/rear") selected @endif>Front/Rear</option>
+                </select>
+            </div>
+            <div class="col-md-2">
                 <select class="form-control form-control-sm aiz-selectpicker mb-2 mb-md-0" name="qty_filter" onchange="sort_products()">
                     <option value="">{{ translate('Filter By Quantity') }}</option>
                     <option value="low_qty" @if($qty_filter == 'low_qty') selected @endif>{{ translate('Low Quantity') }}</option>
@@ -243,6 +250,13 @@
 
 @section('script')
 <script type="text/javascript">
+
+    $(function(){
+
+        @if($category_id == null || $category_id != 1)
+        $('#frontrear-ddl').hide();
+        @endif
+    });
     $(document).on("change", ".check-all", function() {
         if (this.checked) {
             // Iterate each checkbox

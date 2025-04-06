@@ -20,7 +20,7 @@ class CarYearController extends Controller
     {
         $brands = Brand::orderBy('name','asc')->select('id', 'name')->get();
         $sort_search = null;
-        $years = CarYear::orderBy('car_years.name', 'asc')
+        $years = CarYear::orderBy('brands.name', 'asc')->orderBy('car_models.name', 'asc')->orderBy('car_years.name', 'asc')
         ->leftJoin('brands', 'brands.id', 'car_years.brand_id')
         ->leftJoin('car_models', 'car_models.id', 'car_years.model_id');
         if ($request->has('search')) {

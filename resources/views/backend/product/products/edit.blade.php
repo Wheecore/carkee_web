@@ -545,13 +545,13 @@
 
                                 <div class="form-group mb-3">
                                     <label for="name">
-                                        {{ translate('Speed Index') }}
+                                        {{ translate('Speed & Load Index') }}
                                     </label>
                                     <input type="text" class="form-control" name="speed_index"
                                         value="{{ $product->speed_index }}">
                                 </div>
 
-                                <div class="form-group mb-3">
+                                <div class="form-group mb-3" style="display:none;">
                                     <label for="name">
                                         {{ translate('Load Index') }}
                                     </label>

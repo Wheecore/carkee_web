@@ -35,6 +35,7 @@ Route::get('/team', 'Front\InformativePagesController@team');
 Route::get('/privacy-policy', 'Front\InformativePagesController@privacy_policy');
 Route::post('/login-user', 'Auth\LoginController@loginUser')->name('login.user');
 Route::post('/register-customer', 'Front\InformativePagesController@register_customer')->name('register-customer');
+Route::get('/product', 'Front\ProductController@show')->name('product.show');
 
 /*
 |--------------------------------------------------------------------------

@@ -35,6 +35,7 @@ class ProductController extends Controller
         $category_id = null;
         $tyre_brand_id = null;
         $sort_search = null;
+        $front_rear = null;
         $products = Product::orderBy('created_at', 'desc');
         if ($request->has('cat_id') && $request->cat_id != null) {
             $products = $products->where('category_id', $request->cat_id);
@@ -52,13 +53,16 @@ class ProductController extends Controller
             $products = $products->where('low_stock_quantity', '<=', 20);
             $qty_filter = $request->qty_filter;
         }
-
+        if ($request->cat_id != null && $request->front_rear != null) {
+            $products = $products->where('front_rear', $request->front_rear);
+            $front_rear = $request->front_rear;
+        }
         $products = $products->paginate(15);
 
         $categories = Category::whereIn('id', [1, 4, 5])->select('id', 'name')->get();
         $tyre_brands = FeaturedCategory::select('id', 'name')->get();
         $products_without_imgs = DB::table('products')->whereNull('thumbnail_img')->orWhere('thumbnail_img', 0)->select('id','name')->get();
-        return view('backend.product.products.index', compact('products', 'qty_filter', 'sort_search', 'category_id', 'tyre_brand_id', 'categories', 'tyre_brands','products_without_imgs'));
+        return view('backend.product.products.index', compact('products','front_rear', 'qty_filter', 'sort_search', 'category_id', 'tyre_brand_id', 'categories', 'tyre_brands','products_without_imgs'));
     }
 
     public function create()

@@ -17,7 +17,7 @@ class CarVariantController extends Controller
     {
         $brands = Brand::orderBy('name','asc')->select('id', 'name')->get();
         $sort_search = null;
-        $variants = CarVariant::orderBy('car_variants.name', 'asc')
+        $variants = CarVariant::orderBy('brands.name', 'asc')->orderBy('car_models.name', 'asc')->orderBy('car_variants.name', 'asc')
         ->leftJoin('brands', 'brands.id', 'car_variants.brand_id')
         ->leftJoin('car_models', 'car_models.id', 'car_variants.model_id')
         ->leftJoin('car_years', 'car_years.id', 'car_variants.year_id');
@@ -94,5 +94,5 @@ class CarVariantController extends Controller
         flash(translate('Car variant has been deleted successfully'))->success();
         return redirect()->route('variants.index');
     }
-    
+
 }

@@ -91,7 +91,7 @@ class ProductController extends Controller
             ->groupBy('car_wash_usages.user_id')
             ->get();
         }
-        
+
         $reviews_arr = [];
         foreach ($reviews as $review) {
             $reviews_arr[] = array(
@@ -131,6 +131,7 @@ class ProductController extends Controller
         ->where('products.category_id', 1)
         ->where('products.published', 1)
         ->where('products.name', 'like', '%' . $name . '%')
+        ->orWhere('products.tags', 'like', '%' . $name . '%')
         ->orderBy('products.num_of_sale', 'desc')
         ->paginate(10)->appends(request()->query());
 

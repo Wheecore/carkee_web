@@ -66,7 +66,7 @@ class AdminController extends Controller
 		$products = DB::connection('mysql_secondary')
 		->table('products')
 		->select('products.name', 'products.qty', 'products.cost_price')
-		->joint('categories', 'products.category_id', '=', 'categories.id')
+		->join('categories', 'products.category_id', '=', 'categories.id')
 		->whereIn('categories.name', ["Tyre","Car Wash","Parts"])
 		->get()
 		->toArray();

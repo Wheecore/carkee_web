@@ -13,7 +13,10 @@ class BatterySubCategoriesController extends Controller
     public function index(Request $request)
     {
         $sort_search = null;
-        $categories = BatterySubCategory::where('battery_sub_categories.parent_id', null)->orderBy('battery_sub_categories.created_at', 'desc')
+        $categories = BatterySubCategory::where('battery_sub_categories.parent_id', null)
+                                        ->orderBy('bsct.name', 'asc')
+                                        //->orderBy('battery_sub_categories.created_at', 'desc')
+
         ->leftJoin('battery_sub_category_translations as bsct', 'bsct.battery_sub_category_id', '=', 'battery_sub_categories.id');
         if ($request->has('search')) {
             $sort_search = $request->search;
@@ -28,7 +31,7 @@ class BatterySubCategoriesController extends Controller
         $this->validate($request, [
             'name' => 'required'
         ]);
-        
+
         if (DB::table('battery_sub_category_translations')->where('lang', 'en')->where('name', $request->name)->first()) {
             return back()->with('danger', translate('Category name is already taken'));
         }
@@ -82,7 +85,7 @@ class BatterySubCategoriesController extends Controller
         flash(translate('Category has been deleted successfully'))->success();
         return redirect(route('battery-sub-categories.index'));
     }
-    
+
     public function battery_get_sub_child_categories(Request $request)
     {
         $categories = DB::table('battery_sub_categories')->join('battery_sub_category_translations as sct', 'sct.battery_sub_category_id', '=', 'battery_sub_categories.id')->select('sct.battery_sub_category_id as id', 'sct.name')->where('battery_sub_categories.parent_id', $request->id)->where('sct.lang', env('DEFAULT_LANGUAGE', 'en'))->get()->toArray();
@@ -95,7 +98,7 @@ class BatterySubCategoriesController extends Controller
             $selected = ($category->id == $child_id) ? 'selected' : '';
             $options .= '<option value="' . $category->id . '" ' . $selected . '>' . $category->name . '</option>';
         }
-        
+
         return $options;
     }
 }

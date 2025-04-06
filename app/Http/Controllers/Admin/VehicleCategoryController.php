@@ -12,7 +12,7 @@ class VehicleCategoryController extends Controller
     public function categories(Request $request)
     {
         $sort_search = null;
-        $cats = VehicleCategory::orderBy('id', 'desc');
+        $cats = VehicleCategory::orderBy('name', 'asc');
         if ($request->has('search')) {
             $sort_search = $request->search;
             $cats = $cats->where('name', 'like', '%' . $sort_search . '%');

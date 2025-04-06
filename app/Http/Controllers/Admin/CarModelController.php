@@ -17,7 +17,7 @@ class CarModelController extends Controller
     {
         $brands = Brand::orderBy('name','asc')->select('id', 'name')->get();
         $sort_search = null;
-        $models = CarModel::orderBy('car_models.name', 'asc')
+        $models = CarModel::orderBy('brands.name', 'asc')->orderBy('car_models.name', 'asc')
         ->leftJoin('brands', 'brands.id', 'car_models.brand_id');
         if ($request->has('search')) {
             $sort_search = $request->search;
@@ -99,5 +99,5 @@ class CarModelController extends Controller
         $lists = CarList::where('brand_id', $request->id)->get();
         return view('backend.product.models.user_ajax_model', compact('lists'));
     }
-    
+
 }

@@ -13,7 +13,7 @@ class BrandsDataController extends Controller
     public function brands(Request $request, $brand_type)
     {
         $sort_search = null;
-        $brands = BrandData::where('type',$brand_type)->orderBy('id', 'desc');
+        $brands = BrandData::where('type',$brand_type)->orderBy('name', 'asc');
         if ($request->has('search')) {
             $sort_search = $request->search;
             $brands = $brands->where('name', 'like', '%' . $sort_search . '%');

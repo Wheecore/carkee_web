@@ -22,7 +22,7 @@ class FeaturedCategoryController extends Controller
 	public function categories(Request $request)
 	{
 		$sort_search = null;
-		$cats = FeaturedCategory::orderBy('id', 'desc');
+		$cats = FeaturedCategory::orderBy('name', 'asc');
 
 		if ($request->has('search')) {
 			$sort_search = $request->search;
@@ -46,7 +46,7 @@ class FeaturedCategoryController extends Controller
 		flash(translate('Data has been inserted successfully'))->success();
 		return redirect()->route('featured.categories');
 	}
-    
+
 	public function categoryEdit(Request $request, $id)
 	{
 		$lang = $request->lang;
@@ -81,7 +81,10 @@ class FeaturedCategoryController extends Controller
 	{
 		$sort_search = null;
 		$cats = FeaturedCategory::all();
-		$subcats = FeaturedSubCategory::orderBy('id', 'desc');
+		$subcats = FeaturedSubCategory::join('featured_categories', 'featured_categories.id', '=', 'featured_sub_categories.featured_category_id')
+        ->select('featured_categories.name as categoryName','featured_sub_categories.*')
+        ->orderBy('featured_categories.name','asc')->orderBy('featured_sub_categories.name','asc');
+
 		if ($request->has('search')) {
 			$sort_search = $request->search;
 			$subcats = $subcats->where('name', 'like', '%' . $sort_search . '%');
