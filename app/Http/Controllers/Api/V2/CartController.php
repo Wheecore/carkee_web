@@ -683,7 +683,7 @@ class CartController extends Controller
 
     public function checkTimings(Request $request)
     {
-        $current_date = date('Y-m-d', strtotime('+3 days'));        
+        $current_date = date('Y-m-d', strtotime('+3 days'));
         $available_dates = WorkshopAvailability::select('shop_id', 'date')
             ->where('shop_id', $request->shop_id)
             ->whereNotNull('from_time')
@@ -838,7 +838,7 @@ class CartController extends Controller
                 'car_lists.car_plate', 'car_lists.id')
                 ->where('car_lists.user_id', $user_id)
                 ->orderBy('car_lists.id', 'desc')
-                ->get();    
+                ->get();
             $lists_arr = $lists->map(function ($list) {
                 return [
                     'id' => $list->id,
@@ -924,7 +924,7 @@ class CartController extends Controller
         ->when(!empty($request->brand_data_id), function ($q) {
             return $q->where('tyre_service_brand_id', request('brand_data_id'));
         });
-        
+
         if ($request->size_cat_id) {
             $size_cat_id = $request->size_cat_id;
             $products = $products->where('size_category_id', $request->size_cat_id);
@@ -985,6 +985,8 @@ class CartController extends Controller
                 'total_reviews' => $product->reviews->count(),
                 'tyre_size' => $product->tyre_size ? $product->tyre_size : '',
                 'brand_photo' => $brand_photo ? api_asset($brand_photo->photo) : '',
+                'front_rear' => $product->front_rear ? $product->front_rear : '',
+
             ];
         });
         $tyre_deals = Deal::where('type','tyre')->where('status', 1)->select('id' ,'start_date', 'end_date', 'text_color', 'banner')->get();
@@ -1090,7 +1092,7 @@ class CartController extends Controller
                 ->where('car_lists.user_id', $user_id)
                 ->orderBy('car_lists.id', 'desc')
                 ->get();
-            
+
             $lists_arr = $lists->map(function ($list) {
                 return [
                     'id' => $list->id,
