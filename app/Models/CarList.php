@@ -16,6 +16,7 @@ class CarList extends Model
         'brand_id',
         'model_id',
         'details_id',
+        'variant_id',
         'year_id',
         'type_id',
         'size_alternative_id',

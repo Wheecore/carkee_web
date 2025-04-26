@@ -28,7 +28,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use App\Models\Customer;
-
+use Illuminate\Support\Facades\Log;
 
 class CustomerController extends Controller
 {
@@ -312,7 +312,7 @@ class CustomerController extends Controller
                     'gift_image' => api_asset($gift_datas->gift_image)
                 ];
                 array_push($gifts_arr, $data);
-        } 
+        }
         if ($order->is_gift_discount_applied) {
             $gift_discount_data = json_decode($order->gift_discount_data);
             $data = [
@@ -361,7 +361,7 @@ class CustomerController extends Controller
         $merchant_vouchers_arr = $merchant_vouchers->map(function ($coupon) {
             return [
             'amount' => single_price($coupon->amount),
-            'code' => $coupon->voucher_code 
+            'code' => $coupon->voucher_code
             ];
         });
 
@@ -373,7 +373,7 @@ class CustomerController extends Controller
                     'id' => $history->id,
                     'voucher_code' => $history->voucher_code,
                     'date' => ($history->created_at) ? convert_datetime_to_local_timezone($history->created_at, user_timezone($user_id)) : '',
-                ]; 
+                ];
             }
         }
 
@@ -430,7 +430,7 @@ class CustomerController extends Controller
                 'tnc' => $coupon->tnc,
                 'description' => $coupon->description,
             ];
-        })->values(); 
+        })->values();
 
         // Process gift_base coupons
         $gift_base_arr = $coupons->filter(function ($coupon) {
@@ -462,7 +462,7 @@ class CustomerController extends Controller
             ->where('deals.status', 1)
             ->where('deals.type', 'membership')
             ->select(
-            'deals.id AS id', 
+            'deals.id AS id',
             'title',
             DB::raw("DATE_FORMAT(FROM_UNIXTIME(start_date), '%d/%m/%Y') AS start_date"),
             DB::raw("DATE_FORMAT(FROM_UNIXTIME(end_date), '%d/%m/%Y') AS end_date"),
@@ -670,17 +670,17 @@ class CustomerController extends Controller
                 $file = $request->file('image');
                 $extension = $file->getClientOriginalExtension();
                 $filename = str_replace(" ", "-", rand(10000000000,9999999999).date("YmdHis").$file->getClientOriginalName());
-        
+
                 $upload = new Upload;
                 $size = $file->getSize();
-        
+
                 if (!isset($type[$extension])) {
                     return response()->json([
                         'result' => false,
                         'message' => "Only image can be uploaded"
                     ]);
                 }
-        
+
                 $newPath = "uploads/all/$filename";
                 if (env('FILESYSTEM_DRIVER') == 's3') {
                     Storage::disk('s3')->put($newPath, file_get_contents(base_path('public/') . $newPath));
@@ -688,7 +688,7 @@ class CustomerController extends Controller
                 else{
                     $file->move($dir,$filename);
                 }
-        
+
                 $upload->file_original_name = 'car_image';
                 $upload->extension = $extension;
                 $upload->file_name = 'uploads/all/'.$filename;
@@ -696,7 +696,7 @@ class CustomerController extends Controller
                 $upload->type = $type[$upload->extension];
                 $upload->file_size = $size;
                 $upload->save();
-        
+
                 $image_id = $upload->id;
                 }
                 else{
@@ -744,17 +744,17 @@ class CustomerController extends Controller
                 $file = $request->file('image');
                 $extension = $file->getClientOriginalExtension();
                 $filename = str_replace(" ", "-", rand(10000000000,9999999999).date("YmdHis").$file->getClientOriginalName());
-        
+
                 $upload = new Upload;
                 $size = $file->getSize();
-        
+
                 if (!isset($type[$extension])) {
                     return response()->json([
                         'result' => false,
                         'message' => "Only image can be uploaded"
                     ]);
                 }
-        
+
                 $file->move($dir,$filename);
 
                 $upload->file_original_name = 'car_image';
@@ -774,7 +774,7 @@ class CustomerController extends Controller
                 'brand_id' => $request->brand_id,
                 'model_id' => $request->model_id,
                 'year_id' => $request->year_id,
-                'variant_id' => $request->variant_id,
+                'variant_id' => $request->type_id,
                 'chassis_number' => $request->chassis_number,
                 'car_plate' => $request->car_plate,
                 'insurance' => $request->insurance,
@@ -816,7 +816,7 @@ class CustomerController extends Controller
                     //     $shipping = 0;
                     //     $subtotal += 0;
                     //     $tax += 0;
-            
+
                         // $order_detail = new OrderDetail();
                         // $order_detail->order_id = $order->id;
                         // $order_detail->seller_id = $product->user_id;
@@ -828,10 +828,10 @@ class CustomerController extends Controller
                         // $shipping += $order_detail->shipping_cost;
                         // $order_detail->quantity = 1;
                         // $order_detail->type = 'C';
-            
+
                         // $order_detail->save();
                         // $order->grand_total = $subtotal + $tax + $shipping;
-            
+
                         // Car wash payments
                     //     $car_wash_payment = new CarWashPayment();
                     //     $car_wash_payment->car_wash_product_id = $product->id;
@@ -846,7 +846,7 @@ class CustomerController extends Controller
                     //     $car_wash_payment->model_name = $car_model->name;
                     //     $car_wash_payment->status = 1;
                     //     $car_wash_payment->save();
-    
+
                     //     $order->save();
                     // }
                 // }
@@ -1073,7 +1073,7 @@ class CustomerController extends Controller
         $old_data = array();
         $old_data['old_workshop_date'] = $order_before_update->workshop_date;
         $old_data['old_workshop_time'] = $order_before_update->workshop_time;
-        
+
         $order = Order::find($request->order_id);
         $order->reassign_date = Carbon::now();
         $order->reassign_status = 2;
@@ -1126,7 +1126,7 @@ class CustomerController extends Controller
         }
 
         if($order_delivery_status != 'pending' && $old_shop_id != $request->shop_id){
-        $old_shop = DB::table('shops')->where('id', $old_shop_id)->select('user_id')->first();    
+        $old_shop = DB::table('shops')->where('id', $old_shop_id)->select('user_id')->first();
         // Generate Notification to workshop to return the products to admin
         \App\Models\Notification::create([
             'user_id' => $old_shop->user_id,
@@ -1228,7 +1228,7 @@ class CustomerController extends Controller
                 ->leftJoin('product_translations', 'product_translations.product_id', '=', 'products.id')
                 ->select('order_details.product_id','product_translations.name', 'order_details.quantity', 'order_details.price','order_details.received_status')
                 ->get();
-        
+
             $tyre_products_arr = $tyre_products->map(function ($tyre_product) {
                 $product_name_with_choice = ($tyre_product->name != null) ? $tyre_product->name : translate('Product Unavailable');
                 return [
@@ -1240,7 +1240,7 @@ class CustomerController extends Controller
                     'package_name' => ''
                 ];
             });
-            
+
             $package_products = DB::table('order_details')
                 ->where('order_details.order_id', $order_id)
                 ->where('order_details.type', 'P')
@@ -1259,7 +1259,7 @@ class CustomerController extends Controller
                     'package_name' => translate('Package')
                 ];
             });
-        
+
             $gifts_arr = [];
             if ($order->is_gift_product_availed) {
                 $gift_datas = json_decode($order->gift_product_data);
@@ -1446,7 +1446,7 @@ class CustomerController extends Controller
                     if (Review::where('order_id',$orderDetail->order_id)->where('user_id', $user_id)->where('product_id', $orderDetail->product_id)->first() == null) {
                         $commentable = true;
                     }
-                $product_name = $orderDetail->name; 
+                $product_name = $orderDetail->name;
                 return [
                     'is_comment' => $commentable,
                     'product_name' => $product_name,
@@ -1724,7 +1724,7 @@ class CustomerController extends Controller
         $red +=  count(array_keys($tyres_array, "Red"));
         $green +=  count(array_keys($tyres_array, "Green"));
         $yellow +=  count(array_keys($tyres_array, "Yellow"));
-           
+
         $car_info = [
             'red' => $red,
             'green' => $green,
@@ -1844,31 +1844,31 @@ class CustomerController extends Controller
         // 1 = done
         // 2 = in progress
         $collected = 0;
-        $service_start = 0; 
-        $product_recieved = 0; 
-        $installation_satus = 0; 
-        $ready_for_collection = 0; 
+        $service_start = 0;
+        $product_recieved = 0;
+        $installation_satus = 0;
+        $ready_for_collection = 0;
         if($order->delivery_status != 'pending' || $order->delivery_status != 'cancelled' || $order->delivery_status != 'Rejected'){
-            $service_start = 1; 
+            $service_start = 1;
         }
 
         if($order_details->received_status == 'Received'){
-            $product_recieved = 1; 
+            $product_recieved = 1;
         }
 
         if($order->start_installation_status == 1){
-            $installation_satus = 2; 
+            $installation_satus = 2;
         }
         else if($order->notify_user_come_to_workshop_to_review_car == 1){
-            $installation_satus = 1; 
+            $installation_satus = 1;
         }
 
         if($order->notify_user_come_to_workshop_to_review_car == 1){
-            $ready_for_collection = 1; 
+            $ready_for_collection = 1;
         }
 
         if($order->delivery_status == 'completed' || $order->delivery_status == 'Done'){
-            $collected = 1; 
+            $collected = 1;
         }
         $data = [
             'code' => $order->code,
@@ -1906,7 +1906,7 @@ class CustomerController extends Controller
                 'message' => 'Battery QR is invalid'
             ]);
         }
-        
+
         if ($data->payment_status != 'paid') {
             return response()->json([
                 'result' => false,
@@ -2105,7 +2105,7 @@ class CustomerController extends Controller
             'result' => true,
             'normal_orders' => $normal_orders_arr,
             'emergency_orders' => $emergency_orders_arr
-        ]); 
+        ]);
     }
 
     public function completeUserOrder($order_id)
@@ -2136,7 +2136,7 @@ class CustomerController extends Controller
         return response()->json([
             'result' => true,
             'message' => 'Order completed successfully'
-        ]); 
+        ]);
     }
 
     public function cancel_order($order_id)
@@ -2160,7 +2160,7 @@ class CustomerController extends Controller
                     }
                 }
         }
-           
+
         // Generate Notification to admin
         \App\Models\Notification::create([
             'user_id' => User::where('user_type', 'admin')->select('id')->first()->id,
@@ -2188,7 +2188,7 @@ class CustomerController extends Controller
         } catch (\Exception $e) {
             // dd($e);
         }
-        
+
         if($order->order_type == "N")
         {
         // Generate Notification to workshop
@@ -2215,7 +2215,7 @@ class CustomerController extends Controller
         return response()->json([
             'result' => true,
             'message' => 'Order has been cancelled successfully'
-        ]); 
+        ]);
     }
 
     public function show_message_content(Request $request)
@@ -2224,7 +2224,7 @@ class CustomerController extends Controller
         return response()->json([
             'result' => true,
             'data' => $data->content
-        ]); 
+        ]);
     }
 
 }
