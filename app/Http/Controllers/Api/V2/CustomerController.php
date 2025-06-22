@@ -768,6 +768,7 @@ class CustomerController extends Controller
             } else {
                 $image_id = 0;
             }
+            Log::info("variant_id: ". $request->type_id);
             $count = DB::table('car_lists')->where('user_id', $user_id)->count();
             $carlist = CarList::create([
                 'user_id' => $user_id,

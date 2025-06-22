@@ -128,7 +128,7 @@ class FeaturedCategoryController extends Controller
 	}
 	public function ajaxsubcategory(Request $request)
 	{
-		$datas = FeaturedSubCategory::where('featured_category_id', $request->id)->get();
+		$datas = FeaturedSubCategory::where('featured_category_id', $request->id)->orderBy("name")->get();
 		return view('backend.featured_category.sub_category.ajax', compact('datas'));
 	}
 }

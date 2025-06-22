@@ -11,6 +11,7 @@ use App\Models\FeaturedSubCategory;
 use App\Models\Deal;
 use App\Models\DealProduct;
 use App\Models\BrandData;
+use App\Models\PartType;
 use App\Models\CarVariant;
 use App\Models\Product;
 use App\Models\ServiceProductsExport;
@@ -69,6 +70,8 @@ class ProductController extends Controller
     {
         $data['tyre_brands'] = BrandData::where('type', 'tyre_brands')->get();
         $data['service_brands'] = BrandData::where('type', 'service_brands')->get();
+        $data['part_brands'] = BrandData::where('type', 'part_brands')->get();
+        $data['part_types'] = PartType::get();
         $data['size_categories'] = SizeCategory::select('id', 'name')->get();
         $data['vehicle_categories'] = VehicleCategory::select('id', 'name')->get();
         $data['feature_categories'] = FeaturedCategory::select('id', 'name')->get();
@@ -96,9 +99,12 @@ class ProductController extends Controller
         $product->category_id = $request->category_id;
         if ($request->category_id == 1) {
             $product->tyre_service_brand_id = $request->tyre_brand_id;
+        } else if ($request->category_id == 8) {
+            $product->tyre_service_brand_id = $request->part_brand_id;
         } else {
             $product->tyre_service_brand_id = $request->service_brand_id;
         }
+        $product->part_type_id = $request->part_type_id ?? null;
         $product->featured_cat_id = $request->featured_cat_id;
         $product->featured_sub_cat_id = $request->featured_sub_cat_id;
         $product->sub_category_id = $request->sub_category_id;
@@ -261,6 +267,8 @@ class ProductController extends Controller
         $data['categories'] = Category::whereIn('name', ["Tyre", "Car Wash", "Parts"])->select('id', 'name')->get();
         $data['tyre_brands'] = BrandData::where('type', 'tyre_brands')->get();
         $data['service_brands'] = BrandData::where('type', 'service_brands')->get();
+        $data['part_brands'] = BrandData::where('type', 'part_brands')->get();
+        $data['part_types'] = PartType::get();
         $data['featured_categories'] = FeaturedCategory::select('id', 'name')->get();
         $data['featured_sub_categories'] = FeaturedSubCategory::all();
         $data['vehicle_categories'] = VehicleCategory::select('id', 'name')->get();
@@ -288,9 +296,12 @@ class ProductController extends Controller
         $product->category_id       = $request->category_id;
         if ($request->category_id == 1) {
             $product->tyre_service_brand_id = $request->tyre_brand_id;
-        } else {
+        } else if ($request->category_id == 8) {
+            $product->tyre_service_brand_id = $request->part_brand_id;
+        }else {
             $product->tyre_service_brand_id = $request->service_brand_id;
         }
+        $product->part_type_id = $request->part_type_id ?? null;
         $product->featured_cat_id = $request->featured_cat_id;
         $product->featured_sub_cat_id = $request->featured_sub_cat_id;
         $product->vehicle_cat_id = $request->vehicle_cat_id;
@@ -592,7 +603,11 @@ class ProductController extends Controller
                 $selected_car_variants = explode(',', $request->car_variants);
             }
             $ids = (is_array($request->id)) ? $request->id : [$request->id];
-            $variants = CarVariant::select('id', 'name')->orderBy('name', 'asc')->whereIn('year_id', $ids)->get();
+            
+            
+            $variants = CarVariant::select('id', 'name')->orderBy('name', 'asc')->whereIn('year_id', $ids)->where("brand_id",$request->brand)->where("model_id",$request->model)->get();
+            
+            
             foreach ($variants as $variant) {
                 $selected = (in_array($variant->id, $selected_car_variants)) ? 'selected' : '';
                 $html .= '<option value="' . $variant->id . '"' . $selected . '>' . $variant->name . '</option>';

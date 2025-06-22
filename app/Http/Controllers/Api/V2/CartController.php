@@ -828,6 +828,7 @@ class CartController extends Controller
 
         $lists_arr = [];
         if ($user_id) {
+
             $lists = DB::table('car_lists')
                 ->leftJoin('brands', 'brands.id', '=', 'car_lists.brand_id')
                 ->leftJoin('car_models', 'car_models.id', '=', 'car_lists.model_id')
@@ -909,6 +910,8 @@ class CartController extends Controller
         $sub_cat_id = '';
         $child_cat_id = '';
         $products = Product::where('category_id', $category_id)
+        ->leftJoin('brand_datas', 'brand_datas.id', '=', 'products.tyre_service_brand_id')
+       ->select('products.*')
         ->when(!empty($request->brand_id), function ($q) {
             return $q->whereJsonContains('brand_id', request('brand_id'));
         })
@@ -965,11 +968,15 @@ class CartController extends Controller
                 break;
             case 'tyre-brand':
                 $products->orderByRaw("FIELD(tyre_service_brand_id , $request->tyre_brand) desc");
+
+
                 break;
             default:
-                $products->orderBy('created_at', 'desc');
+                $products->orderby('brand_datas.name');
                 break;
         }
+        $products->orderby('brand_datas.name');
+        $products->orderby('products.name');
         $products = filter_products($products)->paginate(10)->appends(request()->query());
         $products->getCollection()->transform(function ($product) {
             $brand_photo = DB::table('brand_datas')->where('id', $product->tyre_service_brand_id)->select('photo')->first();

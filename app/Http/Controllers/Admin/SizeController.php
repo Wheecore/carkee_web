@@ -208,12 +208,12 @@ class SizeController extends Controller
 
     public function ajaxsubcategory(Request $request)
     {
-        $datas = SizeSubCategory::where('size_category_id', $request->id)->get();
+        $datas = SizeSubCategory::where('size_category_id', $request->id)->orderBy("name")->get();
         return view('backend.size.sub_category.ajax', compact('datas'));
     }
     public function ajaxchildcategory(Request $request)
     {
-        $datas = SizeChildCategory::where('size_sub_category_id', $request->id)->get();
+        $datas = SizeChildCategory::where('size_sub_category_id', $request->id)->orderBy("name")->get();
         return view('backend.size.child_category.ajax', compact('datas'));
     }
 

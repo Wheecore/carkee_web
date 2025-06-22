@@ -29,7 +29,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin', 'unbanned']], funct
 	Route::resource('categories', 'Admin\CategoryController');
 	Route::get('/categories/edit/{id}', 'Admin\CategoryController@edit')->name('categories.edit');
 	Route::get('/categories/destroy/{id}', 'Admin\CategoryController@destroy')->name('categories.destroy');
-
+	
+	Route::resource('part-types', 'Admin\PartTypeController');
+    Route::get('/part-types/edit/{id}', 'Admin\PartTypeController@edit')->name('part-types.edit');
+	Route::get('/part-types/destroy/{id}', 'Admin\PartTypeController@destroy')->name('part-types.destroy');
+	
 	Route::resource('brands', 'Admin\CarBrandController');
 	Route::get('/brands/edit/{id}', 'Admin\CarBrandController@edit')->name('brands.edit');
 	Route::get('/brands/destroy/{id}', 'Admin\CarBrandController@destroy')->name('brands.destroy');
@@ -421,11 +425,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['admin', 'unbanned']], funct
 	Route::post('/battery-get-sub-child-categories', 'Admin\BatterySubCategoriesController@battery_get_sub_child_categories');
 	Route::post('/get-sub-child-categories', 'Admin\ServiceSubChildCategoriesController@get_sub_child_categories');
 
-	Route::get('/add-tyre-battery', 'Admin\ProductV2Controller@add_tyre_battery')->name('add-tyre-battery');
-	Route::post('/add-tyre-battery', 'Admin\ProductV2Controller@add_tyre_battery_store')->name('add-tyre-battery.store');
+	Route::get('/add-tyre-battery-part', 'Admin\ProductV2Controller@add_tyre_battery_part')->name('add-tyre-battery-part');
+	Route::post('/add-tyre-battery-part', 'Admin\ProductV2Controller@add_tyre_battery_part_store')->name('add-tyre-battery-part.store');
 	Route::get('/add-services', 'Admin\ProductV2Controller@add_services')->name('add-services');
 	Route::post('/add-services', 'Admin\ProductV2Controller@add_services_store')->name('add-services.store');
 	Route::post('/get-all-tyres', 'Admin\ProductV2Controller@get_all_tyres');
+	Route::post('/get-all-parts2', 'Admin\ProductV2Controller@get_all_parts2');
 	Route::post('/get-all-batteries', 'Admin\ProductV2Controller@get_all_batteries');
 	Route::post('/get-all-services', 'Admin\ProductV2Controller@get_all_services');
 	Route::post('/get-all-mileages', 'Admin\ProductV2Controller@get_all_mileages');
@@ -451,7 +456,7 @@ Route::group(['middleware' => ['auth', 'unbanned']], function () {
 	Route::get('/products/duplicate/{id}', 'Admin\ProductController@duplicate')->name('products.duplicate');
 	Route::post('/products/published', 'Admin\ProductController@updatePublished')->name('products.published');
 	Route::post('/products-image/upload', 'Admin\ProductController@updateImage')->name('products.image-upload');
-
+	
 	// Batteries products for emergency services
 	Route::get('/batteries/all', 'Admin\BatteryController@all_batteries')->name('batteries.all');
 	Route::get('/batteries/create', 'Admin\BatteryController@create')->name('battery.create');

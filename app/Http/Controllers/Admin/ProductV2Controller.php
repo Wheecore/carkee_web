@@ -15,13 +15,50 @@ use Illuminate\Support\Facades\DB;
 
 class ProductV2Controller extends Controller
 {
-	public function add_tyre_battery()
+	public function add_tyre_battery_part()
 	{
 		$data['brands'] = Brand::select('id', 'name')->orderBy('name', 'asc')->get();
-		$data['feature_categories'] = FeaturedCategory::select('id', 'name')->get();
-		$data['size_categories'] = SizeCategory::select('id', 'name')->get();
+		$data['feature_categories'] = FeaturedCategory::select('id', 'name')->orderBy('name')->get();
+		$data['size_categories'] = SizeCategory::select('id', 'name')->orderBy('name')->get();
 		$data['subcategories'] = DB::table('service_categories')->join('service_category_translations as sct', 'sct.service_category_id', '=', 'service_categories.id')->select('sct.service_category_id as id', 'sct.name')->where('service_categories.parent_id', null)->where('sct.lang', env('DEFAULT_LANGUAGE', 'en'))->get()->toArray();
-		return view('backend.product.products.add-tyre-battery', $data);
+		return view('backend.product.products.add-tyre-battery-part', $data);
+	}
+	
+	public function get_all_parts2(Request $request)
+	{
+		$products = DB::table('products')
+			->select('id', 'name', 'brand_id', 'model_id', 'year_id', 'variant_id')
+			->when(request('sub_category_id'), function ($q) {
+				return $q->where('featured_cat_id', request('sub_category_id'));
+			})
+			->when(request('sub_child_category_id'), function ($q) {
+				return $q->where('featured_sub_cat_id', request('sub_child_category_id'));
+			})
+			->when(request('size_cat_id'), function ($q) {
+				return $q->where('size_category_id', request('size_cat_id'));
+			})
+			->when(request('sub_cat_id'), function ($q) {
+				return $q->where('size_sub_category_id', request('sub_cat_id'));
+			})
+			->when(request('child_cat_id'), function ($q) {
+				return $q->where('size_child_category_id', request('child_cat_id'));
+			})
+			->where('category_id', 8)
+			->get()
+			->toArray();
+		$html = '';
+		$unchecked_html = '';
+		foreach ($products as $product) {
+			$checked = $this->check_is_checked($request, $product);
+			if ($checked) {
+				$html .= '<tr><td><div class="form-group d-inline-block"><label class="aiz-checkbox"><input type="checkbox" class="check-part" name="parts_' . $product->id . '" value="' . $product->id . '" ' . $checked . '><span class="aiz-square-check"></span></label></div></td><td>' . $product->name . '</td></tr>';
+			} else {
+				$unchecked_html .= '<tr><td><div class="form-group d-inline-block"><label class="aiz-checkbox"><input type="checkbox" class="check-part" name="parts_' . $product->id . '" value="' . $product->id . '"><span class="aiz-square-check"></span></label></div></td><td>' . $product->name . '</td></tr>';
+			}
+		}
+		$unchecked_html .= '<tr class="notfound" style="display: none;"><td colspan="2">No record found</td></tr>';
+		$html .= $unchecked_html;
+		return $html;
 	}
 
 	public function get_all_tyres(Request $request)
@@ -89,13 +126,15 @@ class ProductV2Controller extends Controller
 		return $html;
 	}
 
-	public function add_tyre_battery_store(Request $request)
+	public function add_tyre_battery_part_store(Request $request)
 	{
+	   // dd($request->all());
 		$request_brand_id = $request->brand_id;
 		$request_model_id = $request->model_id;
 		$request_year_id = $request->year_id;
 		$request_variant_id = $request->variant_id;
-
+        $request_front_rear = $request->front_rear;
+       
 		$request->session()->put('request_brand_id', $request_brand_id);
 		$request->session()->put('request_model_id', $request_model_id);
 		$request->session()->put('request_year_id', $request_year_id);
@@ -122,9 +161,10 @@ class ProductV2Controller extends Controller
 				})
 				->where('category_id', 1)
 				->get();
-
+				
 			foreach ($products as $product) {
 				if ($request->input('tyres_' . $product->id) || in_array($product->id, $added_tyres)) {
+				    
 					$brand_id = (array) (json_decode($product->brand_id) ?? []);
 					$model_id = (array) (json_decode($product->model_id) ?? []);
 					$year_id = (array) (json_decode($product->year_id) ?? []);
@@ -172,6 +212,7 @@ class ProductV2Controller extends Controller
 					$product->model_id = json_encode($model_id);
 					$product->year_id = json_encode($year_id);
 					$product->variant_id = json_encode($variant_id);
+					$product->front_rear = $request_front_rear;
 					$product->save();
 				}
 			}
@@ -247,6 +288,81 @@ class ProductV2Controller extends Controller
 					$product->save();
 				}
 			}
+			
+			// parts
+// 			$added_parts = explode(',', $request->added_parts);
+// 			$products = Product::select('id', 'brand_id', 'model_id', 'year_id', 'variant_id')
+// 				->when(request('featured_cat_id'), function ($q) {
+// 					return $q->where('featured_cat_id', request('featured_cat_id'));
+// 				})
+// 				->when(request('featured_sub_cat_id'), function ($q) {
+// 					return $q->where('featured_sub_cat_id', request('featured_sub_cat_id'));
+// 				})
+// 				->when(request('size_cat_id'), function ($q) {
+// 					return $q->where('size_category_id', request('size_cat_id'));
+// 				})
+// 				->when(request('sub_cat_id'), function ($q) {
+// 					return $q->where('size_sub_category_id', request('sub_cat_id'));
+// 				})
+// 				->when(request('child_cat_id'), function ($q) {
+// 					return $q->where('size_child_category_id', request('child_cat_id'));
+// 				})
+// 				->where('category_id', 8)
+// 				->get();
+				
+// 			foreach ($products as $product) {
+// 				if ($request->input('parts_' . $product->id) || in_array($product->id, $added_parts)) {
+				    
+// 					$brand_id = (array) (json_decode($product->brand_id) ?? []);
+// 					$model_id = (array) (json_decode($product->model_id) ?? []);
+// 					$year_id = (array) (json_decode($product->year_id) ?? []);
+// 					$variant_id = (array) (json_decode($product->variant_id) ?? []);
+// 					if ($request->input('part_' . $product->id)) {
+// 						if ($request->brand_id) {
+// 							$brand_id[] = $request_brand_id;
+// 							$brand_id = array_unique($brand_id);
+// 						}
+// 						if ($request->model_id) {
+// 							$model_id[] = $request_model_id;
+// 							$model_id = array_unique($model_id);
+// 						}
+// 						if ($request->year_id) {
+// 							$year_id[] = $request_year_id;
+// 							$year_id = array_unique($year_id);
+// 						}
+// 						if ($request->variant_id) {
+// 							$variant_id[] = $request_variant_id;
+// 							$variant_id = array_unique($variant_id);
+// 						}
+// 					} elseif (in_array($product->id, $added_parts)) {
+// 						if ($request->brand_id) {
+// 							if (($key = array_search($request_brand_id, $brand_id)) !== false) {
+// 								unset($brand_id[$key]);
+// 							}
+// 						}
+// 						if ($request->model_id) {
+// 							if (($key = array_search($request_model_id, $model_id)) !== false) {
+// 								unset($model_id[$key]);
+// 							}
+// 						}
+// 						if ($request->year_id) {
+// 							if (($key = array_search($request_year_id, $year_id)) !== false) {
+// 								unset($year_id[$key]);
+// 							}
+// 						}
+// 						if ($request->variant_id) {
+// 							if (($key = array_search($request_variant_id, $variant_id)) !== false) {
+// 								unset($variant_id[$key]);
+// 							}
+// 						}
+// 					}
+// 					$product->brand_id = json_encode($brand_id);
+// 					$product->model_id = json_encode($model_id);
+// 					$product->year_id = json_encode($year_id);
+// 					$product->variant_id = json_encode($variant_id);
+// 					$product->save();
+// 				}
+// 			}
 		}
 
 		flash(translate('Product has been inserted successfully'))->success();

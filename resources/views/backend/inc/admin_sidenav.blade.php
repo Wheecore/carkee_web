@@ -159,7 +159,27 @@
                             </a>
                         </li>
                     @endif
+                    @if ($user->user_type == 'admin' || in_array(92, $permissions))
+                        <li class="aiz-side-nav-item">
+                            <a href="{{ route('brands.data', 'part_brands') }}" class="aiz-side-nav-link">
+                                <i class="las la-expand-arrows-alt aiz-side-nav-icon"></i>
+                                <span class="aiz-side-nav-text">{{ translate('Part Brands') }}</span>
+                            </a>
+                        </li>
+                    @endif
                 @endif
+                
+                <li class="side-nav-title">{{ translate('Part Data') }}</li>
+                    @if ($user->user_type == 'admin' || in_array(93, $permissions))
+                        <li class="aiz-side-nav-item">
+                            <a href="{{ route('part-types.index') }}"
+                                class="aiz-side-nav-link {{ areActiveRoutesAdmin(['part-types.index', 'part-types.create', 'part-types.edit']) }}">
+                                <i class="las la-tractor aiz-side-nav-icon"></i>
+                                <span class="aiz-side-nav-text">{{ translate('Part Types') }}</span>
+                            </a>
+                        </li>
+                    @endif
+                </li>
 
                 <!-- Car Data -->
                 <li class="side-nav-title">{{ translate('Car Data') }}</li>
@@ -214,8 +234,8 @@
                         <ul class="aiz-side-nav-list level-2">
                             @if ($user->user_type == 'admin' || in_array(21, $permissions))
                                 <li class="aiz-side-nav-item">
-                                    <a class="aiz-side-nav-link" href="{{ route('add-tyre-battery') }}">
-                                        <span class="aiz-side-nav-text">{{ translate('Add Tyre Battery') }}</span>
+                                    <a class="aiz-side-nav-link" href="{{ route('add-tyre-battery-part') }}">
+                                        <span class="aiz-side-nav-text">{{ translate('Add Tyre Battery Part') }}</span>
                                     </a>
                                 </li>
                             @endif

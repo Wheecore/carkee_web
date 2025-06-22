@@ -90,6 +90,34 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="form-group row" id="part_brands" style="display: none">
+                                <label class="col-md-3 col-from-label">{{ translate('Part Brands') }}</label>
+                                <div class="col-md-8">
+                                    <select class="form-control aiz-selectpicker" name="part_brand_id" id="part_brand_id"
+                                        data-live-search="true">
+                                        <option value="" readonly="">--Select-</option>
+                                        @foreach ($part_brands as $part_brand)
+                                            <option value="{{ $part_brand->id }}" {{ ($product->tyre_service_brand_id == $part_brand->id) ? 'selected' : '' }}>
+                                                {{ $part_brand->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row" id="part_types" style="display: none">
+                                <label class="col-md-3 col-from-label">{{ translate('Part Types') }}</label>
+                                <div class="col-md-8">
+                                    <select class="form-control aiz-selectpicker" name="part_type_id" id="part_type_id"
+                                        data-live-search="true">
+                                        <option value="" readonly="">--Select-</option>
+                                        @foreach ($part_types as $part_type)
+                                            <option value="{{ $part_type->id }}" {{ ($product->part_type_id == $part_type->id) ? 'selected' : '' }}>
+                                                {{ $part_type->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
                             <div class="form-group row">
                                 <label class="col-lg-3 col-from-label">{{ translate('Tags') }}</label>
                                 <div class="col-lg-8">
@@ -644,6 +672,49 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <div class="part-size-card" style="display:{{ ($product->category_id == 8) ? '' : 'none' }}">
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h5 class="mb-0 h6">{{ translate('Featured Category') }}</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group mb-3">
+                                    <label for="name">
+                                        {{ translate('Main Category') }}
+                                    </label>
+                                    <select class="form-control aiz-selectpicker" name="featured_cat_id" id="featured_cat_id"
+                                        onchange="featured_subcats_ajax()">
+                                        <option value="">--Select--</option>
+                                        @foreach ($featured_categories as $data)
+                                            <option value="{{ $data->id }}"
+                                                {{ $product->featured_cat_id && $product->featured_cat_id == $data->id ? 'selected' : '' }}>
+                                                {{ $data->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group mb-3 featured_sub_cat_id">
+                                    <label for="name">
+                                        {{ translate('Sub Category') }}
+                                    </label>
+                                    <select class="form-control aiz-selectpicker" name="featured_sub_cat_id"
+                                        id="featured_sub_cat_id">
+                                        @foreach ($featured_sub_categories as $data)
+                                            @if ($product->featured_sub_cat_id && $product->featured_sub_cat_id == $data->id)
+                                                <option value="{{ $data->id }}">
+                                                    {{ $data->name }}
+                                                </option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    
                     <div class="card service_card-attributes" style="display:{{ ($product->category_id == 4) ? '' : 'none' }}">
                         <div class="card-header">
                             <h5 class="mb-0 h6">{{ translate('Service Attributes') }}</h5>
@@ -1094,25 +1165,42 @@
                 var category_id = $('#category_id').val();
                 if (category_id == 1) {
                     $('.size-card').css('display', 'block');
+                    $('.part-size-card').css('display', 'none');
                     $('.service_price').css('display', 'none');
                     $('.tyre_price').css('display', 'block');
                     $('#tyre_brands').css('display', 'flex');
-                }
-                else if (category_id == 4) {
+                    $('#part_brands').css('display', 'none');
+                    $('#part_types').css('display', 'none');
+                } else if (category_id == 4) {
                     $('.service_card').css('display', 'block');
                     $('.size-card').css('display', 'none');
+                    $('.part-size-card').css('display', 'none');
                     $('.service_price').css('display', 'block');
                     $('.tyre_price').css('display', 'none');
                     $('#service_brands').css('display', 'flex');
+                    $('#part_brands').css('display', 'none');
+                    $('#part_types').css('display', 'none');
+                } else if (category_id == 5) {
+                    $('.service_card').css('display', 'none');
+                    $('.size-card').css('display', 'none');
+                    $('.part-size-card').css('display', 'none');
+                    $('.service_price').css('display', 'block');
+                    $('.tyre_price').css('display', 'none');
+                    $('#tyre_brands').css('display', 'none');
+                    $('#service_brands').css('display', 'none');
+                    $('#part_brands').css('display', 'none');
+                    $('#part_types').css('display', 'none');
+                } else if (category_id == 8) {
+                    $('.service_card').css('display', 'none');
+                    $('.size-card').css('display', 'none');
+                    $('.part-size-card').css('display', 'block');
+                    $('.service_price').css('display', 'block');
+                    $('.tyre_price').css('display', 'none');
+                    $('#tyre_brands').css('display', 'none');
+                    $('#service_brands').css('display', 'none');
+                    $('#part_brands').css('display', 'flex');
+                    $('#part_types').css('display', 'flex');
                 }
-                else if (category_id == 5) {
-                $('.service_card').css('display', 'none');
-                $('.size-card').css('display', 'none');
-                $('.service_price').css('display', 'block');
-                $('.tyre_price').css('display', 'none');
-                $('#tyre_brands').css('display', 'none');
-                $('#service_brands').css('display', 'none');
-            }
             });
         })(jQuery);
 

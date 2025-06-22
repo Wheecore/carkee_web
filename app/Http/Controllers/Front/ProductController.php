@@ -21,7 +21,6 @@ class ProductController extends Controller
         if (!$product) {
             abort(404, 'Product not found');
         }
-
         // Optionally generate a custom scheme URL for the app (if configured)
         // $appUrl = "carkee://product?id={$product->id}";
 

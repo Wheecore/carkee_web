@@ -259,6 +259,42 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="form-group row">
+                                            <div class="col-md-10">
+                                                <label class="col-from-label">{{ translate('Part Brands') }}</label>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="aiz-switch aiz-switch-success mb-0">
+                                                    <input type="checkbox" name="permissions[]" class="form-control demo-sw" value="92">
+                                                    <span class="slider round"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Part Data -->
+                        <div class="card no-shadow">
+                            <div class="card-body">
+                                <h6>{{ translate('Part Data') }}</h6>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <div class="form-group row">
+                                            <div class="col-md-10">
+                                                <label class="col-from-label">{{ translate('Part Types') }}</label>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <label class="aiz-switch aiz-switch-success mb-0">
+                                                    <input type="checkbox" name="permissions[]" class="form-control demo-sw" value="93">
+                                                    <span class="slider round"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
