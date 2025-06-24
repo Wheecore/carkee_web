@@ -228,6 +228,7 @@ Route::prefix('v2')->group(function () {
 
     Route::get('category/{category_id}/{user_id?}', 'Api\V2\CartController@tyrePageData');
     Route::get('categories/{category_name}/{user_id?}', 'Api\V2\CartController@categoryPageData');
+    Route::get('parts/search', 'Api\V2\CartController@categoryPartPageData');
 
     // width
     Route::get('get-size-sub-cats/{size_cat_id}', 'Api\V2\CartController@getSizeSubCats');

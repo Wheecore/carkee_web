@@ -1291,6 +1291,84 @@ class CartController extends Controller
         ], 200);
     }
 
+    // Part Search
+    public function categoryPartPageData(Request $request)
+    {
+        $sort_by = $request->sort_by;
+
+        $brands = Brand::orderBy('name', 'asc')->select('id', 'name')->get();
+        $brand_category = DB::table('brand_datas')->where('type', 'part_brands')->select('id', 'name')->get();
+        $part_type = DB::table('part_types')->select('id', 'name')->orderBy('name', 'asc')->get();
+
+       $query = Product::where('category_id', 8)
+    ->join('brand_datas', 'products.tyre_service_brand_id', '=', 'brand_datas.id')
+    ->where('brand_datas.type', 'part_brands')
+    ->select('products.*')
+    ->when(!empty($request->part_brand_id), function ($q) use ($request) {
+        return $q->where('tyre_service_brand_id', $request->part_brand_id);
+    })
+    ->when(!empty($request->part_type_id), function ($q) use ($request) {
+        return $q->where('part_type_id', $request->part_type_id);
+    });
+
+    $brand_id = $request->part_brand_id ? $request->part_brand_id : '';
+    $type_id = $request->part_type_id ? $request->part_type_id : '';
+// Sorting logic
+switch ($sort_by) {
+    case 'oldest':
+        $query->orderBy('products.created_at', 'asc');
+        break;
+    case 'price-asc':
+        $query->orderBy('products.quantity_1_price', 'asc');
+        break;
+    case 'tyre-brand':
+        if (!empty($request->brand)) {
+            $query->orderByRaw("FIELD(products.tyre_service_brand_id, ?) DESC", [$request->brand]);
+        }
+        break;
+    default:
+        $query->orderBy('products.created_at', 'desc');
+        break;
+}
+
+$img = 'assets/img/part.png';
+
+// Execute query with filter and pagination
+// Format response
+$products = filter_products($query)->paginate(10)->appends(request()->query());
+        $products->getCollection()->transform(function ($product)use ($img) {
+            $brand_photo = DB::table('brand_datas')->where('id', $product->tyre_service_brand_id)->select('photo')->first();
+            return [
+                'id' => $product->id,
+                'name' => $product->getTranslation('name'),
+                'thumbnail_image' => $product->thumbnail_img ? api_asset($product->thumbnail_img) : static_asset($img),
+                'discount_price' => home_discounted_base_price($product),
+                'base_price' => home_base_price($product),
+                'has_discount' => home_base_price($product) != home_discounted_base_price($product),
+                'rating' => $product->rating,
+                'sales' => (int) $product->num_of_sale,
+                'total_reviews' => $product->reviews->count(),
+                'tyre_size' => $product->tyre_size ?? '',
+                'brand_photo' => $brand_photo ? api_asset($brand_photo->photo) : '',
+            ];
+        });
+
+
+        return response()->json([
+            'result' => true,
+            'products' => $products,
+            'sort_by' => $sort_by ? $sort_by : '',
+            'brands' => $brands,
+            'brand_category' => $brand_category,
+            'part_type' => $part_type,
+            'brand_id' => $brand_id,
+            'part_type_id' => $type_id,
+        ], 200);
+    }
+
+
+
+    // End Part Search
     public function getSizeSubCats($size_cat_id)
     {
         $datas = SizeSubCategory::where('size_category_id', $size_cat_id)->orderBy('name','desc')->get();
